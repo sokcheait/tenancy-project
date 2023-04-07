@@ -1,2 +1,2 @@
-# tennancy-project
+# tenancy-project
 projects
