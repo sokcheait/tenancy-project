@@ -3,7 +3,6 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { reactive } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref,watch } from 'vue';
-import { useToast } from "vue-toastification";
 import {
   Alert, 
   Button,
@@ -15,7 +14,9 @@ import {
   Input as VanillaInput,
   Select as VanillaSelect,
 } from '@flavorly/vanilla-components';
-import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid';
+import Swal from 'vue-sweetalert2';
+import { useToast } from "vue-toastification";
 
 export default {
     components: {
@@ -37,40 +38,47 @@ export default {
         VanillaSelect,
         HomeIcon,
         ChevronRightIcon,
-        UserIcon,
+        UserIcon
     },
     props: {
-        errors: Object
+        user: Object,
+        errors: Object,
     },
     setup() {
-        const form = useForm({
-            name: '',
-            email: '',
-            password: '',
-            password_confirmation: '',
-        });
+        const swal = Swal;
         const toast = useToast()
-        return { form, toast }
+        return { swal,toast }
     },
     data() {
         return {
-            valueErrors:''
+            valueErrors:'',
+            form: useForm({
+                name:this.user.name,
+                email: this.user.email,
+            })
         }
     },
-    created() {
-        // this.toast.success("My toast content", {
-            
-        // });
-    },
     methods: {
-        submitUser() {
-            this.form.post(route('users.store'), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    this.toast.success("Create user successfully", {
-            
-                    });
-                },
+        updateUser() {
+            this.$swal.fire(({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon:"warning",
+                showCancelButton: true,
+                buttonsStyling: true,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Update it!"
+            })).then((result) => { 
+                if (result.value) {
+                    this.form.put(route('users.update',this.user.id), {
+                        preserveScroll: true,
+                            onSuccess: () => {
+                                this.toast.success("Your post has been Updated!", {
+                                    
+                                });
+                            },
+                    }); 
+                }
             });
         }
     }
@@ -80,10 +88,10 @@ export default {
 </script>
 
 <template>
-    <AppLayout title="Users-create">
+    <AppLayout title="Users-edit">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                User Create
+                User Edit
             </h2>
         </template>
 
@@ -99,11 +107,11 @@ export default {
                         </span>
                         <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-4 w-8 text-blue-500" /></span>
                         <Link href="" class="text-primary-600">
-                            Create
+                            Edit
                         </Link>
                     </div>
                     <div class="">
-                        <form @submit.prevent="submitUser">
+                        <form @submit.prevent="updateUser">
                             <InputGroup
                                 label="Name"
                                 name="name"
@@ -134,39 +142,9 @@ export default {
                                     :errors="form.errors.email"
                                 />
                             </InputGroup>
-                            <InputGroup
-                                label="Password"
-                                name="password"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[90px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.password"
-                                    name="password"
-                                    type="password"
-                                    placeholder="Enter password"
-                                    :errors="form.errors.password"
-                                />
-                            </InputGroup>
-                            <InputGroup
-                                label="Password confirmation"
-                                name="password_confirmation"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[180px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.password_confirmation"
-                                    name="password_confirmation"
-                                    type="password"
-                                    placeholder="Enter Password confirmation"
-                                    :errors="form.errors.password_confirmation"
-                                />
-                            </InputGroup>
                             <Button
                                 class="w-full bg-primary-500 text-slate-50 text-center p-2 rounded-lg"
-                                label="Save"
+                                label="Update"
                                 variant="primary"
                                 type="submit"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing"

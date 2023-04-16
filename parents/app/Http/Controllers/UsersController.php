@@ -16,7 +16,10 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Users/Index');
+        $users = app(User::class)->all();
+        return Inertia::render('Users/Index',[
+            'users'=>$users
+        ]);
     }
 
     public function create()
@@ -31,8 +34,43 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
+    {   
+        $filed = $request->validate([
+            'name' => 'required|string',
+            'email' => [
+                'required',
+                'max:50',
+                'email',
+                'unique:users',
+            ],
+            'password' => [
+                'required',
+                'string',
+                'same:password_confirmation',
+                'min:6',             // must be at least 6 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&]/', // must contain a special character
+            ],
+            'password_confirmation' => [
+                'required',
+                'min:6',
+            ],
+        ]);
+        User::create([
+            'name' => $filed['name'],
+            'email' => $filed['email'],
+            'password' => bcrypt($filed['password'])
+        ]);
+        return redirect()->route('users.index');
+    }
+
+    public function edit(User $user)
     {
-        dd($request->all());
+        return Inertia::render('Users/Edit',[
+            'user' => $user
+        ]);
     }
 
     /**
@@ -53,9 +91,21 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $filed = $request->validate([
+            'name' => 'required|string',
+            'email' => [
+                'required',
+                'max:50',
+                'unique:users,email,'.$user->id
+            ],
+        ]);
+        $user->update([
+            'name' => $filed['name'],
+            'email' => $filed['email']
+        ]);
+        return redirect()->route('users.index');
     }
 
     /**
@@ -64,8 +114,9 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect()->route('users.index');
     }
 }
