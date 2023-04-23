@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button } from '@flavorly/vanilla-components';
 import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon } from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 
@@ -16,6 +16,10 @@ export default {
         HomeIcon,
         ChevronRightIcon,
         UserIcon,
+        TrashIcon,
+        PencilAltIcon,
+        PencilIcon,
+        EyeIcon
     },
     props: {
         users: Object,
@@ -53,6 +57,14 @@ export default {
                     })
                 }
             });
+        },
+        showUser(id) {
+            this.$inertia.get(route('users.show',id),{
+                preserveScroll: true,
+                onSuccess: () => {
+                    
+                },
+            })
         }
     }
 
@@ -62,13 +74,8 @@ export default {
 
 <template>
     <AppLayout title="Users">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                User
-            </h2>
-        </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <div class="p-2 rounded-lg bg-slate-100 mb-4">
@@ -169,14 +176,14 @@ export default {
                                                 <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <Link :href="route('users.edit',user.id)" class="text-blue-600">
-                                                Edit
-                                            </Link>
-                                            <!-- <Link :href="route('users.destroy',user.id)" class="text-rose-600 mx-2">
-                                                Delete
-                                            </Link> -->
-                                            <span class="text-rose-600 mx-2 cursor-pointer" @click="deleteUser(user.id)">Delete</span>
+                                        <td class="px-6 py-4 flex">
+                                            <span>
+                                                <Link :href="route('users.edit',user.id)">
+                                                    <PencilIcon class="text-blue-600 w-5 h-5"/>
+                                                </Link>
+                                            </span>
+                                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(user.id)"/></span>
+                                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(user.id)" /></span>
                                         </td>
                                     </tr>
                                 </tbody>

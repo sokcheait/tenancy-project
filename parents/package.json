@@ -29,6 +29,8 @@
         "@heroicons/vue": "^2.0.17",
         "@popperjs/core": "^2.11.7",
         "@tailwindcss/aspect-ratio": "^0.4.2",
+        "@vue-hero-icons/outline": "^1.7.2",
+        "@vue-hero-icons/solid": "^1.7.2",
         "vue-sweetalert2": "^5.0.5",
         "vue-toastification": "^2.0.0-rc.5"
     }

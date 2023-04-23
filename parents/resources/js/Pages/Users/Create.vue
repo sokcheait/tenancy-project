@@ -68,7 +68,10 @@ export default {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.toast.success("Create user successfully", {
-            
+                    });
+                },
+                onError: () => {
+                    this.toast.errors("Create user Errors", {
                     });
                 },
             });
@@ -87,7 +90,7 @@ export default {
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <div class="p-2 rounded-lg bg-slate-100">
