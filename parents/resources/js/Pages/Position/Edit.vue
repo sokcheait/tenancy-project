@@ -14,8 +14,10 @@ import {
   InputGroup,
   Input as VanillaInput,
   Select as VanillaSelect,
+  Toggle,
 } from '@flavorly/vanilla-components';
 import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid'
+import Swal from 'vue-sweetalert2';
 
 export default {
     components: {
@@ -35,45 +37,53 @@ export default {
         InputGroup,
         VanillaInput,
         VanillaSelect,
+        Toggle,
         HomeIcon,
         ChevronRightIcon,
         UserIcon,
     },
     props: {
+        position: Object,
         errors: Object
     },
     setup() {
-        const form = useForm({
-            name: '',
-            email: '',
-            password: '',
-            password_confirmation: '',
-        });
+        const swal = Swal;
         const toast = useToast()
-        return { form, toast }
+        return { toast, swal }
     },
     data() {
         return {
-            valueErrors:''
+            valueErrors:'',
+            form: useForm({
+                name:this.position.name,
+                is_active: this.position.is_active,
+            })
         }
     },
     created() {
-        // this.toast.success("My toast content", {
-            
-        // });
+       
     },
     methods: {
-        submitUser() {
-            this.form.post(route('users.store'), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    this.toast.success("Create user successfully", {
-                    });
-                },
-                onError: () => {
-                    this.toast.errors("Create user Errors", {
-                    });
-                },
+        updatePosition() {
+            this.$swal.fire(({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon:"warning",
+                showCancelButton: true,
+                buttonsStyling: true,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Yes, Update it!"
+            })).then((result) => { 
+                if (result.value) {
+                    this.form.put(route('position.update',this.position.id), {
+                        preserveScroll: true,
+                            onSuccess: () => {
+                                this.toast.success("Your post has been Updated!", {
+                                    
+                                });
+                            },
+                    }); 
+                }
             });
         }
     }
@@ -83,10 +93,10 @@ export default {
 </script>
 
 <template>
-    <AppLayout title="Users-create">
+    <AppLayout title="Position-create">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                User Create
+                Position Edit
             </h2>
         </template>
 
@@ -96,17 +106,17 @@ export default {
                     <div class="p-2 rounded-lg bg-slate-100">
                         <span class="float-left"><HomeIcon class="h-5 w-8 text-blue-500" /></span>
                         <span class="float-left ml-2">
-                            <Link :href="route('users.index')" class="text-primary-600">
-                             Users
+                            <Link :href="route('position.index')" class="text-primary-600">
+                                Position
                             </Link>
                         </span>
                         <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-4 w-8 text-blue-500" /></span>
                         <Link href="" class="text-primary-600">
-                            Create
+                            Edit
                         </Link>
                     </div>
                     <div class="">
-                        <form @submit.prevent="submitUser">
+                        <form @submit.prevent="updatePosition">
                             <InputGroup
                                 label="Name"
                                 name="name"
@@ -123,52 +133,17 @@ export default {
                                 />
                             </InputGroup>
                             <InputGroup
-                                label="E-mail"
-                                name="email"
+                                label="Status"
+                                name="is_active"
                                 variant="inline"
                                 class="relative"
                             >
-                            <span class="absolute left-20 top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.email"
-                                    name="email"
-                                    type="email"
-                                    placeholder="Enter Email"
-                                    :errors="form.errors.email"
-                                />
-                            </InputGroup>
-                            <InputGroup
-                                label="Password"
-                                name="password"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[90px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.password"
-                                    name="password"
-                                    type="password"
-                                    placeholder="Enter password"
-                                    :errors="form.errors.password"
-                                />
-                            </InputGroup>
-                            <InputGroup
-                                label="Password confirmation"
-                                name="password_confirmation"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[180px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.password_confirmation"
-                                    name="password_confirmation"
-                                    type="password"
-                                    placeholder="Enter Password confirmation"
-                                    :errors="form.errors.password_confirmation"
-                                />
+                            <Toggle
+                                v-model="form.is_active"
+                            />
                             </InputGroup>
                             <Button
-                                class="w-full bg-primary-500 text-slate-50 text-center p-2 rounded-lg"
+                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg float-right"
                                 label="Save"
                                 variant="primary"
                                 type="submit"

@@ -177,19 +177,16 @@ const logout = () => {
                     </div>
                 </div>
             </nav>
-
-            <!-- Page Heading -->
-            <!-- <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
+            <div class="w-full flex flex-wrap">
+                <div class="w-[16%]">
+                    <Navigation />
                 </div>
-            </header> -->
-            <Navigation />
-
-            <!-- Page Content -->
-            <main>
-                <slot />
-            </main>
+                <div class="w-[84%] px-5 py-3">
+                    <main>
+                        <slot />
+                    </main>
+                </div>
+            </div>
         </div>
     </div>
 </template>

@@ -22,7 +22,7 @@ export default {
         EyeIcon
     },
     props: {
-        users: Object,
+        positions: Object,
     },
     setup() {
         const swal = Swal;
@@ -36,7 +36,7 @@ export default {
         }
     },
     methods: {
-        deleteUser(userId) {
+        deletePosition(userId) {
             this.$swal.fire(({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -47,7 +47,7 @@ export default {
                 confirmButtonText: "Yes, Delete it!"
             })).then((result) => { 
                 if (result.value) { 
-                    this.$inertia.delete(route('users.destroy',userId),{
+                    this.$inertia.delete(route('position.destroy',userId),{
                         preserveScroll: true,
                         onSuccess: () => {
                             this.toast.success("Your post has been deleted!", {
@@ -73,7 +73,7 @@ export default {
 </script>
 
 <template>
-    <AppLayout title="Users">
+    <AppLayout title="Position">
 
         <div class="py-4">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
@@ -81,15 +81,15 @@ export default {
                     <div class="p-2 rounded-lg bg-slate-100 mb-4">
                         <span class="float-left"><HomeIcon class="h-5 w-8 text-blue-500" /></span>
                         <span class="ml-2">
-                            <Link :href="route('users.index')" class="text-primary-600">
-                                Users
+                            <Link :href="route('position.index')" class="text-primary-600">
+                                Position
                             </Link>
                         </span>
                     </div> 
                    <div class="mb-2">
-                    <Link :href="route('users.create')">
+                    <Link :href="route('position.create')">
                         <Button
-                            label="Create User"
+                            label="Create Position"
                             variant="primary"
                         />
                     </Link>
@@ -142,9 +142,6 @@ export default {
                                             Name
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Email
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
                                             Status
                                         </th>
                                         <th scope="col" class="px-6 py-3">
@@ -153,7 +150,7 @@ export default {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(user,index) in users" :key="index"
+                                    <tr v-for="(position,index) in positions" :key="index"
                                         class="bg-white border-b dark:bg-gray-800 
                                             dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="w-4 p-4">
@@ -163,27 +160,26 @@ export default {
                                             </div>
                                         </td>
                                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                            <img class="w-10 h-10 rounded-full" :src="'/storage/profile-photos/profile-picture-4.jpg'" alt="image">
                                             <div class="pl-3">
-                                                <div class="text-base font-semibold">{{ user.name }}</div>
+                                                <div class="text-base font-semibold">{{ position.name }}</div>
                                             </div>  
                                         </th>
                                         <td class="px-6 py-4">
-                                            {{ user.email }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center">
-                                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
+                                            <div v-if="position.is_active==true" class="flex items-center">
+                                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> active
+                                            </div>
+                                            <div v-else class="flex items-center">
+                                                <div class="h-2.5 w-2.5 rounded-full bg-gray-400 mr-2"></div> unactive
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 flex">
                                             <span>
-                                                <Link :href="route('users.edit',user.id)">
+                                                <Link :href="route('position.edit',position.id)">
                                                     <PencilIcon class="text-blue-600 w-5 h-5"/>
                                                 </Link>
                                             </span>
-                                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(user.id)"/></span>
-                                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(user.id)" /></span>
+                                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deletePosition(position.id)"/></span>
+                                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(position.id)" /></span>
                                         </td>
                                     </tr>
                                 </tbody>

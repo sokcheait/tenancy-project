@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -34,4 +35,6 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::resource('/users',UsersController::class);
+    Route::resource('/position',PositionController::class);
+    Route::resource('/employee',EmployeeController::class);
 });
