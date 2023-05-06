@@ -12,6 +12,8 @@ import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
+
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -24,6 +26,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(Toast)
             .use(VueSweetalert2)
+            .use(setupCalendar, {})
             .use(VanillaComponents, Plugin)
             .use(ExclamationTriangleIcon, XMarkIcon)
             .mount(el);

@@ -179,7 +179,6 @@ export default {
                                                 </Link>
                                             </span>
                                             <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deletePosition(position.id)"/></span>
-                                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(position.id)" /></span>
                                         </td>
                                     </tr>
                                 </tbody>

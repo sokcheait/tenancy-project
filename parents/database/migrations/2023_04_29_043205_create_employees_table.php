@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
+            $table->string('gender')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->string('position_id')->nullable();
             $table->boolean('is_active')->default('false')->index();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

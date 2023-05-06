@@ -8,6 +8,7 @@ import {
   Alert, 
   Button,
   Input,
+  Avatar,
   CheckboxGroup,
   CountryInput,
   FormSection,
@@ -37,6 +38,7 @@ export default {
         VanillaInput,
         VanillaSelect,
         Toggle,
+        Avatar,
         HomeIcon,
         ChevronRightIcon,
         UserIcon,
@@ -48,6 +50,7 @@ export default {
         const form = useForm({
             name: '',
             is_active: null,
+            image: null,
         });
         const toast = useToast()
         return { form, toast }
@@ -129,6 +132,19 @@ export default {
                             <Toggle
                                 v-model="form.is_active"
                             />
+                            </InputGroup>
+                            <InputGroup
+                                label="Photo"
+                                name="image"
+                                variant="inline"
+                                class="relative"
+                            >
+                            <div class="flex">
+                                <Avatar
+                                    v-model="form.image"
+                                    uploadButtonLabel="uplode photo"
+                                />
+                            </div>
                             </InputGroup>
                             <Button
                                 class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg float-right"

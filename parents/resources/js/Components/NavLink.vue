@@ -9,8 +9,8 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'bg-gray-300 w-full float-left rounded-lg p-2'
-        : 'w-full float-left rounded-lg p-2';
+        ? 'relative flex flex-row items-center h-11 focus:outline-none bg-blue-800 dark:bg-gray-600 text-white-600 text-white-800 border-l-4 border-transparent border-blue-500 dark:border-gray-800 pr-6'
+        : 'relative flex flex-row items-center h-11';
 });
 </script>
 

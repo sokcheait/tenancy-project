@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Employee;
 
 class Position extends Model
 {
@@ -23,6 +24,10 @@ class Position extends Model
         'created_at' => 'datetime',
         
     ];
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class);
+    }
 
     // public static function boot()
     // {

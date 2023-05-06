@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
