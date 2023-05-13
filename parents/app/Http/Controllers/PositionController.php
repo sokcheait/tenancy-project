@@ -3,20 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Position;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
+use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PositionController extends Controller
 {
     public function index()
     {
-        $positions = app(Position::class)->all();
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('name', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $positions = QueryBuilder::for(Position::class)
+            ->defaultSort('name')
+            ->allowedSorts(['name', 'is_active'])
+            ->allowedFilters(['name', 'is_active', $globalSearch])
+            ->paginate()
+            ->withQueryString();
         $view = "Position/Index";
-        return Inertia::render($view,[
+        return Inertia::render($view, [
             'positions' => $positions
-        ]);
+        ])->table(function (InertiaTable $table) {
+            $table
+              ->withGlobalSearch()
+              ->defaultSort('name')
+              ->column(key: 'id')
+              ->column(key: 'name', searchable: true, sortable: true, canBeHidden: false)
+              ->column(key: 'is_active',sortable: true)
+              ->column(label: 'Actions');
+        });
     }
     public function create()
     {
@@ -25,6 +52,7 @@ class PositionController extends Controller
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $input = $request->validate([
             'name' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -34,10 +62,18 @@ class PositionController extends Controller
             'is_active' => $request->is_active,
             'created_by' => Auth::user()->id
         ]);
-        app(Media::class)->create([
-            'mediable_id' => $position->id,
-            'mediable_type' => Position::class
-        ]);
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $mediaLay = $position->addMediaFromRequest('image')->toMediaCollection('image');
+            $path = $mediaLay->id;
+            $file = $image->getClientOriginalName();
+            $url = Storage::disk('s3')->put($path, file_get_contents($file), 'public');
+            $test = Storage::disk('s3')->url($url);
+            dd($test);
+            // $url = Storage::disk('s3')->temporaryUrl($file, \Carbon\Carbon::now()->addMinutes(1));
+
+        }
+        
         return redirect()->route('position.index');
     }
     public function edit($id){

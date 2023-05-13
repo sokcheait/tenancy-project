@@ -15,6 +15,7 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^2.11",
         "protonemedia/inertiajs-tables-laravel-query-builder": "^2.2",
+        "spatie/laravel-medialibrary": "^9.0.0",
         "spatie/laravel-query-builder": "^5.2",
         "tightenco/ziggy": "^1.0"
     },

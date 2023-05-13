@@ -85,29 +85,25 @@ export default {
 
 <template>
     <AppLayout title="Position-create">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Position Create
-            </h2>
-        </template>
-
-        <div class="py-4">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-                    <div class="p-2 rounded-lg bg-slate-100">
-                        <span class="float-left"><HomeIcon class="h-5 w-8 text-blue-500" /></span>
-                        <span class="float-left ml-2">
-                            <Link :href="route('users.index')" class="text-primary-600">
-                                Position
-                            </Link>
-                        </span>
-                        <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-4 w-8 text-blue-500" /></span>
-                        <Link href="" class="text-primary-600">
+        <div class="w-full p-4">
+            <div class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+                <div class="flex justify-center items-center w-4 h-4 transition-all duration-300 transform px-4">
+                    <span class="ml-[150px]"><HomeIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
+                    <span class="ml-3 mt-1">
+                        <Link :href="route('position.index')" class="text-gray-200 dark:text-white">
+                            Position
+                        </Link>
+                    </span>
+                    <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
+                    <span class="ml-2 mt-1">
+                        <Link href="" class="text-gray-200 dark:text-white">
                             Create
                         </Link>
-                    </div>
-                    <div class="">
-                        <form @submit.prevent="submitPosition">
+                    </span>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 text-white font-medium group">    
+                <form @submit.prevent="submitPosition">
                             <InputGroup
                                 label="Name"
                                 name="name"
@@ -147,15 +143,13 @@ export default {
                             </div>
                             </InputGroup>
                             <Button
-                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg float-right"
+                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg"
                                 label="Save"
                                 variant="primary"
                                 type="submit"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                             />
-                        </form>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </AppLayout>
