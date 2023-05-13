@@ -10,6 +10,7 @@ module.exports = {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
         './node_modules/@flavorly/vanilla-components/dist/presets/tailwind/all.json', 
+        './node_modules/@protonemedia/inertiajs-tables-laravel-query-builder/**/*.{js,vue}',
     ],
 
     theme: {
