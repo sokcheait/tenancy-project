@@ -18,6 +18,7 @@ import {
   Toggle,
 } from '@flavorly/vanilla-components';
 import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid'
+import FileUpload from "@/Components/FileUpload.vue"
 
 export default {
     components: {
@@ -26,6 +27,7 @@ export default {
         Head,
         Link,
         useForm,
+        FileUpload,
         ref,
         watch,
         Alert, 
@@ -57,7 +59,10 @@ export default {
     },
     data() {
         return {
-            valueErrors:''
+            isPreview:false,
+            valueErrors:'',
+            filePreview: [],
+            fileName: ''
         }
     },
     created() {
@@ -76,7 +81,14 @@ export default {
                     });
                 },
             });
+        },
+        captureFile($event) {
+        if($event.previewBase64 !=''){
+            this.isPreview = true;
+            this.filePreview.push($event.previewBase64);
         }
+        this.fileName = $event.name;
+        },
     }
 
 }
@@ -139,7 +151,12 @@ export default {
                                 <Avatar
                                     v-model="form.image"
                                     uploadButtonLabel="uplode photo"
-                                />
+                                /> 
+                                 <!-- <img v-if="filePreview" :src="filePreview" alt="fileName" style="max-height: 256px"/> -->
+                                <!-- <file-upload @file-updated="captureFile($event)" :preview="filePreview" :is_preview="isPreview"
+                                >
+
+                                </file-upload> -->
                             </div>
                             </InputGroup>
                             <Button

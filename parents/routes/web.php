@@ -3,6 +3,7 @@
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\RolesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +37,9 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::resource('/users',UsersController::class);
+    Route::get('/users/face/user',[UsersController::class,'faceUser'])->name('users.face.user');
     Route::resource('/position',PositionController::class);
     Route::resource('/employee',EmployeeController::class);
+    Route::resource('/roles', RolesController::class);
+    Route::resource('/permissions', PermissionsController::class);
 });

@@ -17,6 +17,9 @@ class PositionController extends Controller
 {
     public function index()
     {
+        // $str= config('face-recognition.python_version')." ".config('face-recognition.face_enc');
+        // $exec = exec($str);
+        // dd($exec);
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
@@ -52,7 +55,7 @@ class PositionController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->image);
         $input = $request->validate([
             'name' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -62,16 +65,9 @@ class PositionController extends Controller
             'is_active' => $request->is_active,
             'created_by' => Auth::user()->id
         ]);
-        if($request->hasFile('image')){
-            $image = $request->file('image');
-            $mediaLay = $position->addMediaFromRequest('image')->toMediaCollection('image');
-            $path = $mediaLay->id;
-            $file = $image->getClientOriginalName();
-            $url = Storage::disk('s3')->put($path, file_get_contents($file), 'public');
-            $test = Storage::disk('s3')->url($url);
-            dd($test);
-            // $url = Storage::disk('s3')->temporaryUrl($file, \Carbon\Carbon::now()->addMinutes(1));
 
+        if($request->hasFile('image')){
+            $position->addMediaFromRequest('image')->toMediaCollection('image');
         }
         
         return redirect()->route('position.index');

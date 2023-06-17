@@ -1,33 +1,3 @@
-<!-- <script setup>
-    import { ref } from 'vue';
-    import { Head, Link, router } from '@inertiajs/vue3';
-    import ApplicationMark from '@/Components/ApplicationMark.vue';
-    import Banner from '@/Components/Banner.vue';
-    import Dropdown from '@/Components/Dropdown.vue';
-    import DropdownLink from '@/Components/DropdownLink.vue';
-    import NavLink from '@/Components/NavLink.vue';
-    import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-    import Navigation from '@/Layouts/Navigation.vue';
-
-    defineProps({
-        title: String,
-    });
-
-    const showingNavigationDropdown = ref(false);
-
-    const switchToTeam = (team) => {
-        router.put(route('current-team.update'), {
-            team_id: team.id,
-        }, {
-            preserveState: false,
-        });
-    };
-
-    const logout = () => {
-        router.post(route('logout'));
-    };
-</script> -->
-
 <script>
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
@@ -38,6 +8,9 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Navigation from '@/Layouts/Navigation.vue';
+import { Cog8ToothIcon } from '@heroicons/vue/24/solid'
+import { Button, DropdownMenu, DropdownOption } from '@flavorly/vanilla-components';
+import { Dropdown as Dropdowns } from '@flavorly/vanilla-components';
 
 export default {
     components: {
@@ -50,16 +23,23 @@ export default {
         Banner,
         Dropdown,
         DropdownLink,
+        Dropdowns,
+        DropdownMenu,
+        DropdownOption,
         NavLink,
         ResponsiveNavLink,
-        Navigation
+        Navigation,
+        Cog8ToothIcon,
+        Button,
     },
     props: {
         title: String,
         errors: Object
     },
     setup() {
-       
+      const openSetting = ref(false)
+
+      return { openSetting }
     },
     data() {
         return {
@@ -158,6 +138,28 @@ export default {
                     />
                 </svg>
                 </button>
+            </li>
+            <li class="px-2 cursor-pointer">
+                <div class="group w-10 h-10 text-center pt-2 transition-colors duration-200 rounded-full shadow-md bg-blue-200 hover:bg-blue-200 dark:bg-gray-50 dark:hover:bg-gray-200 text-gray-900 focus:outline-none">
+                    <Dropdowns :teleport="true">
+                      <template #trigger>
+                        <Cog8ToothIcon class="w-6 h-6 text-gray-800" />
+                      </template>
+                      <div class="py-2 px-2 grid grid-cols-1 gap-2">
+                        <div class="block px-4 py-2 text-xs text-gray-400">
+                            User Face authentication 
+                        </div>
+                        <div class="border-t border-gray-200" />
+                        <DropdownLink :href="route('users.face.user')">
+                            Face Users
+                        </DropdownLink>
+                        <div class="border-t border-gray-200" />
+                        <DropdownLink href="">
+                            Users Mode
+                        </DropdownLink>
+                      </div>
+                    </Dropdowns>
+                </div>  
             </li>
             <li>
                 <div class="block w-px h-6 mx-3 bg-gray-400 dark:bg-gray-700"></div>

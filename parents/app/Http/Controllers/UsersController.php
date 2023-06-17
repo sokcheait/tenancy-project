@@ -149,4 +149,10 @@ class UsersController extends Controller
         $user->delete();
         return redirect()->route('users.index');
     }
+
+    public function faceUser()
+    {
+        return Inertia::render('Users/FaceUser');
+    }
+
 }

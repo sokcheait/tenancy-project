@@ -290,6 +290,21 @@ export default {
                                 v-model="form.is_active"
                             />
                             </InputGroup>
+                            <InputGroup
+                                label="Face Scan"
+                                name="face_sacn"
+                                variant="inline"
+                                class="relative"
+                            >
+                            <div class="w-full bg-gray-200 px-2 h-[250px] flex">
+                                <div class="camera-box w-1/2 h-full">
+                                    camera-box
+                                </div>
+                                <div class="btn-box w-1/2 h-full">
+                                    btn
+                                </div>
+                            </div>
+                            </InputGroup>
                             <Button
                                 class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg float-right"
                                 label="Save"
