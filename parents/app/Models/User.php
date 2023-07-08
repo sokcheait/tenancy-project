@@ -31,7 +31,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'deleted_at'
+        'deleted_at',
+        'leave_user'
     ];
 
     /**

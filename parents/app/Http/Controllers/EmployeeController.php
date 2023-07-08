@@ -15,6 +15,19 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class EmployeeController extends Controller
 {
+     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function __construct()
+    {
+         $this->middleware('permission:employee-index|employee-create|employee-edit|employee-destroy', ['only' => ['index','show']]);
+         $this->middleware('permission:employee-create', ['only' => ['create','store']]);
+         $this->middleware('permission:employee-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:employee-destroy', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         // $employees = app(Employee::class)->with('positions')->get();
@@ -72,6 +85,8 @@ class EmployeeController extends Controller
             'gender'     => 'required',
             'address'    => 'required',
             'position_id' => 'required',
+            'dob' => 'required',
+            'age' => 'required',
             'valide_date_form' => 'required',
             'valide_date_to' => 'required'
         ]);
@@ -80,8 +95,10 @@ class EmployeeController extends Controller
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'gender'     => $request->gender,
-            'phone'     => $request->phone,
+            'phone'      => $request->phone,
             'address'    => $request->address,
+            'dob'        => $request->dob,
+            'age'        => $request->age,
             'is_active'  => $request->is_active
         ]);
 

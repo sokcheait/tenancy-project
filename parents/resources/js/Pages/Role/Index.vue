@@ -98,15 +98,15 @@ export default {
             </div>
             <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 text-white font-medium group">    
                 <Table :resource="roles">
-                    <template #cell(actions)="{ item: user }">
+                    <template #cell(actions)="{ item: role }">
                         <div class="flex">
                             <span>
-                                <Link :href="route('users.edit',user.id)">
+                                <Link :href="route('roles.edit',role.id)">
                                     <PencilIcon class="text-blue-600 w-5 h-5"/>
                                 </Link>
                             </span>
-                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(user.id)"/></span>
-                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(user.id)" /></span>
+                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(role.id)"/></span>
+                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(role.id)" /></span>
                         </div>
                     </template>
                 </Table>

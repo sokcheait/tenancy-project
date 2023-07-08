@@ -23,6 +23,7 @@ import {
 } from '@flavorly/vanilla-components';
 
 import { HomeIcon,ChevronRightIcon ,UserIcon, IconCalendar, CalendarIcon} from '@heroicons/vue/24/solid'
+import { trim } from 'lodash';
 
 export default {
     components: {
@@ -79,13 +80,14 @@ export default {
         const masks = ref({
             input: 'DD/MM/YYYY',
         });
+        const timezone = ref('UTC');
         const selectDragAttribute = {
             popover: {
                 visibility: 'hover',
                 isInteractive: false, 
             },
         }
-        return { toast , optionsGender,masks,selectDragAttribute}
+        return { toast , optionsGender,masks,selectDragAttribute, timezone}
     },
     data() {
         return {
@@ -94,6 +96,13 @@ export default {
                 last_name: '',
                 gender: [],
                 phone: null,
+
+                dob:null,
+                years: null,
+                months: null,
+                days: null,
+                age:null,
+
                 address: '',
                 is_active: null,
                 position_id: [],
@@ -105,7 +114,38 @@ export default {
         }
     },
     created() {
-       
+
+    },
+    watch: {
+        'form.dob':function(val){
+            if(val){
+                const currentDate = new Date();
+                if(new Date(val) > currentDate){
+                    return this.invalidDate(JSON.stringify(val));
+                }else{
+                    const diffTime = currentDate - new Date(val);
+                    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    this.form.age = Math.floor(totalDays / 365);
+                    if(this.form.age==0) this.form.age="0";
+                    return this.form.age;
+                }
+            }
+            this.form.age=null;
+        },
+        'form.age':function(val){
+            if(val){
+                const currentDate = new Date().toISOString();
+                const toDate = new Date();
+                let year = toDate.getFullYear();
+                let month = currentDate.substring(5,7);
+                let day = currentDate.substring(8,10);
+                const currentYear =parseFloat(year - val);
+                this.form.dob =currentYear+"-"+month+"-"+day;
+                return this.form.dob;
+
+            }
+            this.form.dob=null;
+        }
     },
     methods: {
         submitEmployee() {
@@ -116,11 +156,18 @@ export default {
                     });
                 },
                 onError: () => {
-                    this.toast.errors("Create employee Errors", {
+                    this.toast.error("Create employee Errors", {
                     });
                 },
             });
-        }
+        },
+        invalidDate(e){
+            if(e){
+                this.form.age=null;
+                this.toast.error("Invalid Date of Birth "+e);
+                this.$inertia.get("/employee/create");
+            }
+        },
     }
 
 }
@@ -195,6 +242,43 @@ export default {
                             >
                             </RichSelect>
                             </InputGroup>
+                            <InputGroup
+                                label="date of birth"
+                                name="dob"
+                                variant="inline"
+                                class="relative"
+                            >
+                            <span class="absolute left-[140px] top-6 z-10 text-rose-500">*</span>
+                            <div class="float-left">
+                                <DateTimeInput
+                                        v-model="form.dob"
+                                        :is-required="false"
+                                        :inline="false"
+                                        :masks="masks"
+                                        mode="date"
+                                        :errors="form.errors.dob"
+                                        :select-attribute="selectDragAttribute"
+                                        :drag-attribute="selectDragAttribute"
+                                        placeholder="Please select your date of birth"
+                                />
+                            </div>
+                            </InputGroup>
+                            <InputGroup
+                                label="Age"
+                                name="age"
+                                variant="inline"
+                                class="relative"
+                            >
+                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
+                                <VanillaInput
+                                    v-model="form.age"
+                                    name="age"
+                                    type="text"
+                                    placeholder="Please input a age"
+                                    :errors="form.errors.age"
+                                />
+                            </InputGroup>
+
                             <InputGroup
                                 label="Phone Number"
                                 name="phone"

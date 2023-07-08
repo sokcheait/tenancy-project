@@ -22,7 +22,9 @@ class Employee extends Model
         'address',
         'is_active',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'dob',
+        'age'
     ];
 
     public function positions()

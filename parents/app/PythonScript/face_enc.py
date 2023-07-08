@@ -1,7 +1,25 @@
 import face_recognition as faceRecognition
+import urllib.parse as urlparse
+from urllib.parse import parse_qs
+from urllib.request import urlretrieve
+import numpy as np
+import sys
+import operator
 
-demo_img = faceRecognition.load_image_file('./img/pin.jpg')
+def main(arg):
+    parsed = urlparse.urlparse(arg)
+    url = parsed._replace(fragment="").geturl()
+    print(url)
+    # return url
 
-face_locations= faceRecognition.face_locations(demo_img)
+if __name__ == "__main__":
+    main(sys.argv[1])
 
-print(face_locations)
+# if __name__ == "__main__":
+#     main(sys)    
+
+# demo_img = faceRecognition.load_image_file('./img/pin.jpg')
+
+# face_locations= faceRecognition.face_locations(demo_img)
+
+# print(face_locations)

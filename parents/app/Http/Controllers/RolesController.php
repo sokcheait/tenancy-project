@@ -18,10 +18,10 @@ class RolesController extends Controller
 {
     public function __construct()
     {
-        //  $this->middleware('permission:role-index|role-create|role-edit|role-destroy', ['only' => ['index','store']]);
-        //  $this->middleware('permission:role-create', ['only' => ['create','store']]);
-        //  $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-        //  $this->middleware('permission:role-destroy', ['only' => ['destroy']]);
+         $this->middleware('permission:role-index|role-create|role-edit|role-destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:role-create', ['only' => ['create','store']]);
+         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:role-destroy', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -88,6 +88,18 @@ class RolesController extends Controller
         return Inertia::render('Role/Index');
     }
 
+    public function edit(Role $role)
+    {
+        $permissions = Permission::all();
+        $list_permissions = config('role-permission.permissions');
+        $role->permissions->all();
+        return Inertia::render('Role/Edit',[
+            'role' => $role,
+            'permissions'=>$permissions,
+            'list_permissions'=>$list_permissions,
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -106,9 +118,19 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Role $role)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'permissions' => 'required',
+        ]);
+        $role->update([
+            'name' => $request->name,
+            'guard_name' => 'web'
+        ]);
+        $role->syncPermissions($request->permissions);
+        
+        return redirect()->route('roles.index');
     }
 
     /**

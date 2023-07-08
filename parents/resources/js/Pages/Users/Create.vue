@@ -14,6 +14,7 @@ import {
   InputGroup,
   Input as VanillaInput,
   Select as VanillaSelect,
+  RichSelect,
 } from '@flavorly/vanilla-components';
 import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid'
 
@@ -38,9 +39,11 @@ export default {
         HomeIcon,
         ChevronRightIcon,
         UserIcon,
+        RichSelect
     },
     props: {
-        errors: Object
+        errors: Object,
+        roles: Object
     },
     setup() {
         const form = useForm({
@@ -48,6 +51,7 @@ export default {
             email: '',
             password: '',
             password_confirmation: '',
+            roles:null
         });
         const toast = useToast()
         return { form, toast }
@@ -75,6 +79,9 @@ export default {
                     });
                 },
             });
+        },
+        btnClose() {
+            this.$inertia.replace(this.route('users.index'))
         }
     }
 
@@ -163,6 +170,26 @@ export default {
                             :errors="form.errors.password_confirmation"
                         />
                     </InputGroup>
+                    <InputGroup
+                            label="Role"
+                            name="role"
+                            variant="inline"
+                            class="relative text-gray-600"
+                        >
+                        <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
+                        <RichSelect
+                            v-model="form.roles"
+                            :options="roles"
+                            :tags="true"
+                            :clearable="true"
+                            multiple
+                            value-attribute="value"
+                            text-attribute="text"
+                            placeholder="Please select a role"
+                            :errors="form.errors.roles"
+                        >
+                        </RichSelect>
+                    </InputGroup>
                     <Button
                         class="w-[125px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg"
                         label="Save"
@@ -171,9 +198,11 @@ export default {
                         :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                     />
                     <Button
-                        class="w-[125px] bg-rose-500 text-slate-50 text-center p-2 rounded-lg ml-4"
+                        variant="error"
+                        class="w-[125px] bg-danger text-slate-50 text-center p-2 rounded-lg ml-4"
                         label="Close"
                         type="button"
+                        @click="btnClose"
                     />
                 </form>
             </div>

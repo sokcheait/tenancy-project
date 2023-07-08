@@ -13,6 +13,7 @@ import {
   InputGroup,
   Input as VanillaInput,
   Select as VanillaSelect,
+  RichSelect,
 } from '@flavorly/vanilla-components';
 import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid';
 import Swal from 'vue-sweetalert2';
@@ -38,11 +39,14 @@ export default {
         VanillaSelect,
         HomeIcon,
         ChevronRightIcon,
-        UserIcon
+        UserIcon,
+        RichSelect
     },
     props: {
         user: Object,
         errors: Object,
+        roles: Object,
+        userRole: Object,
     },
     setup() {
         const swal = Swal;
@@ -55,8 +59,15 @@ export default {
             form: useForm({
                 name:this.user.name,
                 email: this.user.email,
+                roles: []
             })
         }
+    },
+    created() {
+        if(this.userRole){
+            this.form.roles= Object.keys(this.userRole);
+        }
+        
     },
     methods: {
         updateUser() {
@@ -142,6 +153,26 @@ export default {
                                     :errors="form.errors.email"
                                 />
                             </InputGroup>
+                            <InputGroup
+                                label="Role"
+                                name="role"
+                                variant="inline"
+                                class="relative text-gray-600"
+                            >
+                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
+                            <RichSelect
+                                v-model="form.roles"
+                                :options="roles"
+                                :tags="true"
+                                :clearable="true"
+                                multiple
+                                value-attribute="value"
+                                text-attribute="text"
+                                placeholder="Please select a role"
+                                :errors="form.errors.roles"
+                            >
+                            </RichSelect>
+                        </InputGroup>
                             <Button
                                 class="w-full bg-primary-500 text-slate-50 text-center p-2 rounded-lg"
                                 label="Update"

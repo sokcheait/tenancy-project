@@ -15,11 +15,19 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class PositionController extends Controller
 {
+    public function __construct()
+    {
+         $this->middleware('permission:position-index|position-create|position-edit|position-destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:position-create', ['only' => ['create','store']]);
+         $this->middleware('permission:position-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:position-destroy', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
-        // $str= config('face-recognition.python_version')." ".config('face-recognition.face_enc');
+        // $url = "http://127.0.0.1:9000/bg-image/michael-dam-mEZ3PoFGs_k-unsplash.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=8S155RX1KFUQGSLHGAXQ%2F20230618%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230618T012915Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiI4UzE1NVJYMUtGVVFHU0xIR0FYUSIsImV4cCI6MTY4NzA5NDcxNywicGFyZW50IjoiYWRtaW4ifQ.4CwSTS2TXVVmZL4XfaFrC3hmOR-xZFZiEYeOVeFnzIgKOPpHyUkYHiI_j15DEZ7EumP1AMLBgkbs2ugPq2UewA&X-Amz-SignedHeaders=host&versionId=null&X-Amz-Signature=a03808d99005c89c0c57b005bd6e5a52d37a2360892eda8b78e36ad76cb39014";
+        // $str= config('face-recognition.python_version')." ".config('face-recognition.face_enc')." ".$url;
         // $exec = exec($str);
-        // dd($exec);
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
@@ -55,10 +63,9 @@ class PositionController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->image);
         $input = $request->validate([
             'name' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $position = app(Position::class)->create([
             'name' => $input['name'],

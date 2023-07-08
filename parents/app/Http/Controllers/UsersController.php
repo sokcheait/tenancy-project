@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+// use App\Models\Role;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
@@ -9,10 +10,20 @@ use Illuminate\Support\Collection;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 
 class UsersController extends Controller
 {
+    function __construct()
+    {
+         $this->middleware('permission:users-index|user-create|user-edit|user-destroy', ['only' => ['index','show']]);
+         $this->middleware('permission:users-create', ['only' => ['create','store']]);
+         $this->middleware('permission:users-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:users-destroy', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +63,10 @@ class UsersController extends Controller
 
     public function create()
     {
-        return Inertia::render('Users/Create');
+        $roles = app(Role::class)->pluck('name','id')->toArray();
+        return Inertia::render('Users/Create',[
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -85,19 +99,25 @@ class UsersController extends Controller
                 'required',
                 'min:6',
             ],
+            'roles' => ['required']
         ]);
-        User::create([
+        $user =User::create([
             'name' => $filed['name'],
             'email' => $filed['email'],
             'password' => bcrypt($filed['password'])
         ]);
+        $user->assignRole($filed['roles']);
         return redirect()->route('users.index');
     }
 
     public function edit(User $user)
     {
+        $roles = app(Role::class)->pluck('name','id')->toArray();
+        $userRole = $user->roles->pluck('name','id')->toArray();
         return Inertia::render('Users/Edit',[
-            'user' => $user
+            'user' => $user,
+            'roles' => $roles,
+            'userRole'=>$userRole
         ]);
     }
 
@@ -130,11 +150,14 @@ class UsersController extends Controller
                 'max:50',
                 'unique:users,email,'.$user->id
             ],
+            'roles' => ['required'],
         ]);
         $user->update([
             'name' => $filed['name'],
             'email' => $filed['email']
         ]);
+        DB::table('model_has_roles')->where('model_id',$user['id'])->delete();
+        $user->assignRole($filed['roles']);
         return redirect()->route('users.index');
     }
 
