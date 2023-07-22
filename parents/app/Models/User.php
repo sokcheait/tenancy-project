@@ -11,6 +11,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
+// use SpatiePermissionVue\Traits\RolesPermissionsToVue;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,7 @@ class User extends Authenticatable
     use TwoFactorAuthenticatable;
     use SoftDeletes;
     use HasRoles;
+    // use RolesPermissionsToVue;
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +34,7 @@ class User extends Authenticatable
         'email',
         'password',
         'deleted_at',
-        'leave_user'
+        'user_level'
     ];
 
     /**
@@ -64,4 +66,12 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function getPermissionArray()
+    {
+        return $this->getAllPermissions()->mapWithKeys(function($pr){
+            return [$pr['name'] => true];
+        });
+   
+    }
 }

@@ -18,10 +18,10 @@ class UsersController extends Controller
 {
     function __construct()
     {
-         $this->middleware('permission:users-index|user-create|user-edit|user-destroy', ['only' => ['index','show']]);
-         $this->middleware('permission:users-create', ['only' => ['create','store']]);
-         $this->middleware('permission:users-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:users-destroy', ['only' => ['destroy']]);
+         $this->middleware('permission:users.index|users.create|users.edit|users-destroy', ['only' => ['index','show']]);
+         $this->middleware('permission:users.create', ['only' => ['create','store']]);
+         $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:users.destroy', ['only' => ['destroy']]);
     }
 
     /**
@@ -42,6 +42,10 @@ class UsersController extends Controller
         });
 
         $users = QueryBuilder::for(User::class)
+            ->where(function ($query) {
+                $query->whereNull('user_level')
+                      ->orWhere('user_level','!=','2');
+            })
             ->defaultSort('name')
             ->allowedSorts(['name', 'email'])
             ->allowedFilters(['name', 'email', $globalSearch])
@@ -63,7 +67,9 @@ class UsersController extends Controller
 
     public function create()
     {
-        $roles = app(Role::class)->pluck('name','id')->toArray();
+        $roles = app(Role::class)
+        ->where('name','!=','super-admin')
+        ->pluck('name','id')->toArray();
         return Inertia::render('Users/Create',[
             'roles' => $roles
         ]);

@@ -34,6 +34,7 @@
         "@vue-hero-icons/outline": "^1.7.2",
         "@vue-hero-icons/solid": "^1.7.2",
         "face-api.js": "^0.22.2",
+        "laravel-permission-to-vuejs": "^3.0.1",
         "react-icons": "^4.8.0",
         "v-calendar": "^3.0.3",
         "vue-sweetalert2": "^5.0.5",

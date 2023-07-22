@@ -17,10 +17,10 @@ class PositionController extends Controller
 {
     public function __construct()
     {
-         $this->middleware('permission:position-index|position-create|position-edit|position-destroy', ['only' => ['index','store']]);
-         $this->middleware('permission:position-create', ['only' => ['create','store']]);
-         $this->middleware('permission:position-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:position-destroy', ['only' => ['destroy']]);
+         $this->middleware('permission:position.index|position.create|position.edit|position.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:position.create', ['only' => ['create','store']]);
+         $this->middleware('permission:position.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:position.destroy', ['only' => ['destroy']]);
     }
 
     public function index()

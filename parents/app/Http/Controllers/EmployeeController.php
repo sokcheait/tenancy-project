@@ -22,10 +22,10 @@ class EmployeeController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:employee-index|employee-create|employee-edit|employee-destroy', ['only' => ['index','show']]);
-         $this->middleware('permission:employee-create', ['only' => ['create','store']]);
-         $this->middleware('permission:employee-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:employee-destroy', ['only' => ['destroy']]);
+         $this->middleware('permission:employee.index|employee.create|employee.edit|employee.destroy', ['only' => ['index','show']]);
+         $this->middleware('permission:employee.create', ['only' => ['create','store']]);
+         $this->middleware('permission:employee.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:employee.destroy', ['only' => ['destroy']]);
     }
 
     public function index()

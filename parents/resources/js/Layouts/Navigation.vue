@@ -8,8 +8,7 @@
             </li>
 
             <li v-for="nav_menus in menu" :key="nav_menus">
-                <NavLink :href="route(nav_menus.link)" :active="route().current(nav_menus.link)" class="">
-
+                <NavLink v-if="can(nav_menus.redirect) || is_superAdmin('super-admin')" :href="route(nav_menus.link)" :active="route().current(nav_menus.link)" class="">
                     <span class="inline-flex justify-center items-center ml-4"><component :is="heroIcons[nav_menus.icon]" class='h-6 w-6' /></span>
                     <span class="ml-2 text-sm tracking-wide truncate">
                         {{ nav_menus.lable  }}
@@ -34,12 +33,12 @@ export default {
         NavLink
     },
     setup() {
-        const menu = Nav
+        const menu = Nav;
         return { menu }
     },
     data() {
         return {
-            heroIcons: heroIcons
+            heroIcons: heroIcons,
         }
     }
 }

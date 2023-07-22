@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -41,6 +42,11 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('success'),
                 'errror' => fn () => $request->session()->get('error'),
                 
+            ],
+            'auth'=>[
+                'user' => $request->user() ?   $request->user() : null,
+                'can' =>$request->user() ? $request->user()->getPermissionArray() : [],
+                'is_super_admin' => $request->user() ? $request->user()->roles : null,
             ],
         ]);
     }

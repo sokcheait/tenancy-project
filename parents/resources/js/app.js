@@ -14,7 +14,6 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 
-
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
 createInertiaApp({
@@ -29,6 +28,28 @@ createInertiaApp({
             .use(setupCalendar, {})
             .use(VanillaComponents, Plugin)
             .use(ExclamationTriangleIcon, XMarkIcon)
+            .mixin({methods: {
+                can: function(permissions) {
+                    var param = Array(permissions)
+                    var allPermissions = this.$page.props.auth.can;
+                    var hasPermission = false;
+                    param.forEach(function(item){
+                      if(allPermissions[item]) hasPermission = true;     
+                    });
+                    return hasPermission;
+                },
+                is_superAdmin: function(val) {
+                    var permission_super = this.$page.props.auth.is_super_admin;
+                    var user_level = this.$page.props.auth.user.user_level;
+                    var hasPermission = false;
+                    permission_super.forEach(function(item){
+                        if(item.name==val && user_level===2){
+                            hasPermission = true;
+                        }
+                    });
+                    return hasPermission;
+                }
+            }})
             .mount(el);
     },
     progress: {

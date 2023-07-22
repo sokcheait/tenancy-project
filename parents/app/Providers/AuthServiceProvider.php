@@ -1,10 +1,8 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Models\Permission;
-
-// use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -27,17 +25,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // dd(config('role-permission.permissions'));
-
-        // $routes = config('role-permission.permissions');
-
-        // foreach ($routes as $route) {
-        //     $arr = collect($route);
-        //     $arr->filter(function ($value, $key) {
-        //         dd($key);
-        //         return $key;
-        //     });
-           
-        // }
+        Gate::before(function (User $user, $ability) {
+            return $user->hasRole('super-admin') ? true : null;
+        });
     }
 }

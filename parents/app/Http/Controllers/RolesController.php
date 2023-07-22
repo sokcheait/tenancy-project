@@ -18,10 +18,10 @@ class RolesController extends Controller
 {
     public function __construct()
     {
-         $this->middleware('permission:role-index|role-create|role-edit|role-destroy', ['only' => ['index','store']]);
-         $this->middleware('permission:role-create', ['only' => ['create','store']]);
-         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:role-destroy', ['only' => ['destroy']]);
+         $this->middleware('permission:roles.index|roles-create|roles.edit|roles.destroy', ['only' => ['index','store']]);
+         $this->middleware('permission:roles.create', ['only' => ['create','store']]);
+         $this->middleware('permission:roles.edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:roles.destroy', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -30,7 +30,6 @@ class RolesController extends Controller
      */
     public function index()
     {
-        // return Inertia::render('Role/Index');
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
@@ -41,6 +40,7 @@ class RolesController extends Controller
         });
 
         $roles = QueryBuilder::for(Role::class)
+            ->where('name','!=','super-admin')
             ->defaultSort('name')
             ->allowedSorts(['name'])
             ->allowedFilters(['name', $globalSearch])
