@@ -88,7 +88,7 @@ export default {
                     </span>
                 </div>
                 <div class="text-right">
-                    <Link :href="route('roles.create')" class="text-gray-200 dark:text-white">
+                    <Link v-if="can('roles.create') || is_superAdmin('super-admin')" :href="route('roles.create')" class="text-gray-200 dark:text-white">
                         <Button
                             label="Create Role"
                             variant="primary"
@@ -96,17 +96,17 @@ export default {
                     </Link>
                 </div>
             </div>
-            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 text-white font-medium group">    
+            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium group">    
                 <Table :resource="roles">
                     <template #cell(actions)="{ item: role }">
                         <div class="flex">
-                            <span>
+                            <span v-if="can('roles.edit') || is_superAdmin('super-admin')">
                                 <Link :href="route('roles.edit',role.id)">
                                     <PencilIcon class="text-blue-600 w-5 h-5"/>
                                 </Link>
                             </span>
-                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(role.id)"/></span>
-                            <span><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(role.id)" /></span>
+                            <span v-if="can('roles.destroy') || is_superAdmin('super-admin')"><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(role.id)"/></span>
+                            <span v-if="can('roles.index') || is_superAdmin('super-admin')"><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(role.id)" /></span>
                         </div>
                     </template>
                 </Table>

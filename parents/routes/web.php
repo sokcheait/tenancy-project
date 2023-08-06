@@ -7,6 +7,7 @@ use App\Http\Controllers\RolesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Api\V1\CategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,4 +43,5 @@ Route::middleware([
     Route::resource('/employee',EmployeeController::class);
     Route::resource('/roles', RolesController::class);
     Route::resource('/permissions', PermissionsController::class);
+    Route::resource('/categories', CategoriesController::class);
 });

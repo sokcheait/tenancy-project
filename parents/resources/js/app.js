@@ -34,7 +34,9 @@ createInertiaApp({
                     var allPermissions = this.$page.props.auth.can;
                     var hasPermission = false;
                     param.forEach(function(item){
-                      if(allPermissions[item]) hasPermission = true;     
+                        if(allPermissions[item]){
+                            hasPermission = true;  
+                        }
                     });
                     return hasPermission;
                 },

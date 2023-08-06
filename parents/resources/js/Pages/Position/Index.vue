@@ -87,7 +87,7 @@ export default {
                     </span>
                 </div>
                 <div class="text-right">
-                    <Link :href="route('position.create')" class="text-gray-200 dark:text-white">
+                    <Link v-if="can('position.create') || is_superAdmin('super-admin')" :href="route('position.create')" class="text-gray-200 dark:text-white">
                         <Button
                             label="Create Position"
                             variant="primary"
@@ -95,16 +95,29 @@ export default {
                     </Link>
                 </div>
             </div>
-            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 text-white font-medium group">    
-                <Table :resource="positions">
+            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium group">    
+                <Table :resource="positions" class="dark:border-gray-600 font-medium group">
+                    <template #cell(is_active)="{ item: position }">
+                        <div class="flex ml-6 focus:ring-0 focus:ring-offset-0 focus:border-primary-600">
+                            <span class="relative inline-flex">
+                                <span v-if="position.is_active" class="flex absolute h-4 w-4 top-0 right-0 -mt-1 -mr-1 z-10">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
+                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-green-600" />
+                                </span>
+                                <span v-else class="flex absolute h-4 w-4 top-0 right-0 -mt-1 -mr-1 z-10">
+                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-gray-500" />
+                                </span>
+                            </span>
+                        </div>
+                    </template>
                     <template #cell(actions)="{ item: position }">
                         <div class="flex">
-                            <span>
+                            <span v-if="can('position.edit') || is_superAdmin('super-admin')">
                                 <Link :href="route('position.edit',position.id)">
                                     <PencilIcon class="text-blue-600 w-5 h-5"/>
                                 </Link>
                             </span>
-                            <span><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deletePosition(position.id)"/></span>
+                            <span v-if="can('position.destroy') || is_superAdmin('super-admin')"><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deletePosition(position.id)"/></span>
                         </div>
                     </template>
                 </Table>

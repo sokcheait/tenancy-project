@@ -51,7 +51,7 @@ export default {
     setup() {
         const form = useForm({
             name: '',
-            is_active: null,
+            is_active: false,
             image: null,
         });
         const toast = useToast()

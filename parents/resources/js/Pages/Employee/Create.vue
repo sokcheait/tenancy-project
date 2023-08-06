@@ -21,9 +21,15 @@ import {
   DateTimeInput,
   RichSelect, RichSelectOptionImage, RichSelectOptionIndicator, VanillaInputGroup,FormLabel,PhoneInput
 } from '@flavorly/vanilla-components';
+import { Avatar } from '@flavorly/vanilla-components'
 
 import { HomeIcon,ChevronRightIcon ,UserIcon, IconCalendar, CalendarIcon} from '@heroicons/vue/24/solid'
 import { trim } from 'lodash';
+import InputText from '@/Pages/Components/Forms/InputText.vue'
+import SelectText from '@/Pages/Components/Forms/SelectText.vue'
+import DateSelect from '@/Pages/Components/Forms/DateSelect.vue'
+import InputTextArea from '@/Pages/Components/Forms/InputTextArea.vue'
+import ToggleSwitche from '@/Pages/Components/Forms/ToggleSwitche.vue'
 
 export default {
     components: {
@@ -58,6 +64,12 @@ export default {
         ChevronRightIcon,
         UserIcon,
         CalendarIcon,
+        InputText,
+        SelectText,
+        DateSelect,
+        InputTextArea,
+        ToggleSwitche,
+        Avatar,
         
     },
     props: {
@@ -96,18 +108,19 @@ export default {
                 last_name: '',
                 gender: [],
                 phone: null,
-
-                dob:null,
-                years: null,
-                months: null,
-                days: null,
-                age:null,
+                dob:"",
 
                 address: '',
-                is_active: null,
+                is_active: false,
                 position_id: [],
                 valide_date_form: null,
-                valide_date_to: null
+                valide_date_to: null,
+
+                valide_date_card_form: null,
+                valide_date_card_to: null,
+                id_card: null,
+                
+
             }),
             valueErrors:'',
             valueCountry:'KH',
@@ -117,37 +130,12 @@ export default {
 
     },
     watch: {
-        'form.dob':function(val){
-            if(val){
-                const currentDate = new Date();
-                if(new Date(val) > currentDate){
-                    return this.invalidDate(JSON.stringify(val));
-                }else{
-                    const diffTime = currentDate - new Date(val);
-                    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                    this.form.age = Math.floor(totalDays / 365);
-                    if(this.form.age==0) this.form.age="0";
-                    return this.form.age;
-                }
-            }
-            this.form.age=null;
-        },
-        'form.age':function(val){
-            if(val){
-                const currentDate = new Date().toISOString();
-                const toDate = new Date();
-                let year = toDate.getFullYear();
-                let month = currentDate.substring(5,7);
-                let day = currentDate.substring(8,10);
-                const currentYear =parseFloat(year - val);
-                this.form.dob =currentYear+"-"+month+"-"+day;
-                return this.form.dob;
-
-            }
-            this.form.dob=null;
-        }
+       
     },
     methods: {
+        backEmployee() {
+            this.$inertia.replace('/employee')
+        },
         submitEmployee() {
             this.form.post(route('employee.store'), {
                 preserveScroll: true,
@@ -176,230 +164,177 @@ export default {
 
 <template>
     <AppLayout title="Employee-create">
-        <div class="py-4">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-                    <div class="p-2 rounded-lg bg-slate-100">
-                        <span class="float-left"><HomeIcon class="h-5 w-8 text-blue-500" /></span>
-                        <span class="float-left ml-2">
-                            <Link :href="route('employee.index')" class="text-primary-600">
+        <div class="p-4 w-full">
+            <div class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+                <div class="flex justify-center items-center w-4 h-4 transition-all duration-300 transform px-4">
+                    <span class="ml-[150px]"><HomeIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
+                    <span class="ml-3 mt-1">
+                        <Link :href="route('employee.index')" class="text-gray-200 dark:text-white">
                                 Employee
-                            </Link>
-                        </span>
-                        <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-4 w-8 text-blue-500" /></span>
-                        <Link href="" class="text-primary-600">
+                        </Link>
+                    </span>
+                    <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
+                    <span class="ml-2 mt-1">
+                        <Link href="" class="text-gray-200 dark:text-white">
                             Create
                         </Link>
-                    </div>
-                    <div class="">
-                        <form @submit.prevent="submit">
-                            <InputGroup
-                                label="First Name"
-                                name="first_name"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.first_name"
-                                    name="first_name"
-                                    type="text"
-                                    placeholder="Enter First Name"
-                                    :errors="form.errors.first_name"
+                    </span>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 text-white font-medium group">
+                <form @submit.prevent="submit">
+                    <div class="flex flex-wrap">
+                        <div class="w-full">
+                            <h3 class="text-gray-600 font-bold block p-2 mt-4 bg-gray-200 dark:bg-gray-800 dark:text-white border rounded">Employee Information</h3>
+                        </div>
+                        <div class="w-full flex px-2 py-3">
+                            <div class="w-1/2 flex">
+                                <Avatar
+                                    v-model="profile"
+                                    placeholder="Elon Musk"
+                                    uploadButtonLabel="Uplode profile"
+                                    resetButtonLabel="Clear profile"
+                                    avatarInitials="Profile"
                                 />
-                            </InputGroup>
-                            <InputGroup
-                                label="Last Name"
-                                name="last_name"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.last_name"
-                                    name="last_name"
-                                    type="text"
-                                    placeholder="Enter Last Name"
+                            </div>
+                            <div class="w-1/2">
+                                <toggle-switche v-model="form.is_active" 
+                                                inputLable="Active"
+                                />
+                            </div>
+                        </div>
+                        <input-text v-model="form.first_name" 
+                                inputLable="First Name"
+                                placeholder="Please input first name"
+                                requirest="requirest"
+                                :errors="form.errors.first_name"
+                        />
+                        <input-text v-model="form.last_name" 
+                                    inputLable="Last Name"
+                                    placeholder="Please input last name"
+                                    requirest="requirest"
                                     :errors="form.errors.last_name"
-                                />
-                            </InputGroup>
-                            <InputGroup
-                                label="Gender"
-                                name="gender"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
-                            <RichSelect
-                                v-model="form.gender"
-                                :options="optionsGender"
-                                :tags="true"
-                                :clearable="true"
-                                value-attribute="value"
-                                text-attribute="text"
-                                placeholder="Please select a gender"
-                                :errors="form.errors.gender"
-                            >
-                            </RichSelect>
-                            </InputGroup>
-                            <InputGroup
-                                label="date of birth"
-                                name="dob"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[140px] top-6 z-10 text-rose-500">*</span>
-                            <div class="float-left">
-                                <DateTimeInput
-                                        v-model="form.dob"
-                                        :is-required="false"
-                                        :inline="false"
-                                        :masks="masks"
-                                        mode="date"
-                                        :errors="form.errors.dob"
-                                        :select-attribute="selectDragAttribute"
-                                        :drag-attribute="selectDragAttribute"
-                                        placeholder="Please select your date of birth"
-                                />
-                            </div>
-                            </InputGroup>
-                            <InputGroup
-                                label="Age"
-                                name="age"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaInput
-                                    v-model="form.age"
-                                    name="age"
-                                    type="text"
-                                    placeholder="Please input a age"
+                                    
+                        />
+                        <select-text v-model="form.gender"
+                                    inputLable="Gender"
+                                    :options="optionsGender"
+                                    :tags="true"
+                                    :clearable="true"
+                                    requirest="requirest"
+                                    value-attribute="value"
+                                    text-attribute="text"
+                                    placeholder="Please select a gender"
+                                    :errors="form.errors.gender"
+                        
+                        />
+                        <input-text v-model="form.phone" 
+                                    inputLable="Phone Number"
+                                    placeholder="Please input phone number"
+                                    requirest="requirest"
+                                    :errors="form.errors.phone"
+                                    
+                        />
+                        <date-select v-model="form.dob"  
+                                    inputLable="Date of birth"
+                                    placeholder="Please select date of birth"
+                                    requirest="requirest"
+                                    :masks="masks"
+                                    :errors="form.errors.dob"
+                        />
+                        <input-text v-model="form.age" 
+                                    inputLable="Age"
+                                    placeholder="Please input age"
                                     :errors="form.errors.age"
-                                />
-                            </InputGroup>
-
-                            <InputGroup
-                                label="Phone Number"
-                                name="phone"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <PhoneInput
-                                v-model="form.phone"
-                                :country-code="valueCountry"
-                                :favorite-countries="['KH','US']"
-                                country-placeholder="Pick your phone country"
-                                phone-placeholder="Please input phone Number"
-                            />
-                            </InputGroup>
-                            <InputGroup
-                                label="Address"
-                                name="address"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
-                                <VanillaTextArea
-                                    v-model="form.address"
-                                    name="address"
-                                    placeholder="Please input Address"
-                                    :errors="form.errors.address"
-                                />
-                            </InputGroup>
-                            <InputGroup
-                                label="Position"
-                                name="position"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[120px] top-6 z-10 text-rose-500">*</span>
-                            <RichSelect
-                                v-model="form.position_id"
-                                :options="positions"
-                                :tags="true"
-                                :clearable="true"
-                                value-attribute="id"
-                                text-attribute="name"
-                                placeholder="Please select a Position"
-                                :errors="form.errors.position_id"
-                            >
-                            </RichSelect>
-                            </InputGroup>
-                            <InputGroup
-                                label="Valide date staff form-to"
-                                name="start_date"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <span class="absolute left-[190px] top-6 z-10 text-rose-500">*</span>
-                            <div class="float-left">
-                                <div class="float-left w-1/3">
-                                    <DateTimeInput
-                                        v-model="form.valide_date_form"
-                                        :is-required="false"
-                                        :inline="false"
-                                        :masks="masks"
-                                        mode="date"
-                                        :errors="form.errors.valide_date_form"
-                                        :select-attribute="selectDragAttribute"
-                                        :drag-attribute="selectDragAttribute"
-                                        placeholder="Please select your valide date form"
-                                    />
-                                </div>
-
-                                <div class="float-left w-1/3 ml-5">   
-                                    <DateTimeInput
-                                        v-model="form.valide_date_to"
-                                        :is-required="false"
-                                        :inline="false"
-                                        :masks="masks"
-                                        mode="date"
-                                        :errors="form.errors.valide_date_to"
-                                        :select-attribute="selectDragAttribute"
-                                        :drag-attribute="selectDragAttribute"
-                                        placeholder="Please select your valide date to"
-                                    />
-                                </div>
-                            </div>
-                            </InputGroup>
+                                    
+                        />
+                        
+                        <select-text v-model="form.position_id"
+                                    inputLable="Position"
+                                    :options="positions"
+                                    :tags="true"
+                                    :clearable="true"
+                                    requirest="requirest"
+                                    value-attribute="id"
+                                    text-attribute="name"
+                                    placeholder="Please select a position"
+                                    :errors="form.errors.position_id"
                             
-                            <InputGroup
-                                label="Status"
-                                name="is_active"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <Toggle
-                                v-model="form.is_active"
-                            />
-                            </InputGroup>
-                            <InputGroup
-                                label="Face Scan"
-                                name="face_sacn"
-                                variant="inline"
-                                class="relative"
-                            >
-                            <div class="w-full bg-gray-200 px-2 h-[250px] flex">
-                                <div class="camera-box w-1/2 h-full">
-                                    camera-box
-                                </div>
-                                <div class="btn-box w-1/2 h-full">
-                                    btn
-                                </div>
-                            </div>
-                            </InputGroup>
+                        />
+                        <input-text v-model="form.staff_id" 
+                                    inputLable="Staff ID"
+                                    placeholder="Please input staff ID"
+                                    :errors="form.errors.staff_id"
+                                    
+                        />
+                        <date-select v-model="form.valide_date_form"  
+                                    inputLable="Valide date staff form"
+                                    placeholder="Please select valide staff date form"
+                                    requirest="requirest"
+                                    :masks="masks"
+                                    :errors="form.errors.valide_date_form"
+                        />
+                        <date-select v-model="form.valide_date_to"  
+                                    inputLable="Valide date staff to"
+                                    placeholder="Please select valide date staff to"
+                                    requirest="requirest"
+                                    :masks="masks"
+                                    :errors="form.errors.valide_date_to"
+                        />
+
+                        <div class="w-full">
+                            <h3 class="text-gray-600 font-bold block p-2 mt-4 bg-gray-200 dark:bg-gray-800 dark:text-white border rounded">Personnel information</h3>
+                        </div>
+                        <div class="">
+                            
+                        </div>
+                        <date-select v-model="form.valide_date_card_form"  
+                                    inputLable="Valide date card form"
+                                    placeholder="Please select valide date card form"
+                                    requirest="requirest"
+                                    :masks="masks"
+                                    :errors="form.errors.valide_date_card_form"
+                        />
+                        <date-select v-model="form.valide_date_card_to"  
+                                    inputLable="Valide date card to"
+                                    placeholder="Please select valide date card to"
+                                    requirest="requirest"
+                                    :masks="masks"
+                                    :errors="form.errors.valide_date_card_to"
+                        />
+                        <input-text v-model="form.id_card" 
+                                    inputLable="ID Card"
+                                    placeholder="Please input ID Card"
+                                    requirest="requirest"
+                                    :errors="form.errors.id_card"
+                                    
+                        />
+                        <input-text-area v-model="form.address" 
+                                    inputLable="address"
+                                    placeholder="Please input address"
+                                    :errors="form.errors.address"
+                                    
+                        />
+                        <div class="w-full">
                             <Button
-                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg float-right"
+                                class="w-[80px] bg-red-500 text-slate-50 text-center p-2 rounded-lg float-right  mx-2"
+                                label="Back"
+                                variant="error"
+                                @click="backEmployee"
+                            />
+                            <Button
+                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg float-right  mx-2"
                                 label="Save"
                                 variant="primary"
                                 type="submit"
                                 @click="submitEmployee"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                             />
-                        </form>
+                            
+                        </div>
+
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </AppLayout>

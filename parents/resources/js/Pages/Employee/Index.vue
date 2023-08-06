@@ -93,7 +93,7 @@ export default {
                     </span>
                 </div>
                 <div class="text-right">
-                    <Link :href="route('employee.create')" class="text-gray-200 dark:text-white">
+                    <Link  v-if="can('employee.create') || is_superAdmin('super-admin')" :href="route('employee.create')" class="text-gray-200 dark:text-white">
                         <Button
                             label="Create Employee"
                             variant="primary"
@@ -101,7 +101,7 @@ export default {
                     </Link>
                 </div>
             </div>
-            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 text-white font-medium group">    
+            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium group">    
                 <Table :resource="employees">
                     <template #cell(positions)="{ item: employee }">
                         <span>{{ employee.positions['0'].name }}</span>
@@ -120,7 +120,7 @@ export default {
                                     <div class="block px-4 py-2 text-xs text-gray-400">
                                         Manage Actions
                                     </div>
-                                    <div>
+                                    <div v-if="can('employee.edit') || is_superAdmin('super-admin')">
                                         <DropdownLink :href="route('employee.edit',employee.id)">
                                             <PencilSquareIcon class="text-blue-600 w-4 h-4 float-left ml-2"/> Edit
                                         </DropdownLink>

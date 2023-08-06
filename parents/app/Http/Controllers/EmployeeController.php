@@ -70,7 +70,7 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $positions = app(Position::class)->where('is_active','true')->get()->toArray();
+        $positions = app(Position::class)->where('is_active','true')->get();
         $view = "Employee/Create";
         return Inertia::render($view,[
             'positions'=> $positions
@@ -79,14 +79,13 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'first_name' => 'required|max:120',
             'last_name'  => 'required|max:120',
             'gender'     => 'required',
-            'address'    => 'required',
             'position_id' => 'required',
             'dob' => 'required',
-            'age' => 'required',
             'valide_date_form' => 'required',
             'valide_date_to' => 'required'
         ]);
@@ -110,5 +109,10 @@ class EmployeeController extends Controller
         ]);
         return redirect()->route('employee.index');
 
+    }
+
+    public function edit(Employee $employee)
+    {
+        dd($employee);
     }
 }
