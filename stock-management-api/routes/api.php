@@ -25,9 +25,8 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::group(['prefix'=>'v1'],function() {
-        Route::apiResource('productes',ProductsController::class);
-
         Route::apiResource('categories',CategoriesController::class);
         Route::get('categories/{category}',[CategoriesController::class,'edit']);
+        
     });
 });

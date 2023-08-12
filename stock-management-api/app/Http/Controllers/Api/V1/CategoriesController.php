@@ -78,15 +78,25 @@ class CategoriesController extends Controller
     public function update(CategoriesUpdateRequest $request, $id)
     {
         $categories = app(Category::class)->find($id);
-        $categories->update($request->validated());
-        return response()->json([
-            'success'=> true,
-            'status'=> 200,
-            'message'=> "success",
-            'data' => [
-                'categories' => $categories
-            ]
-        ]);
+        if(!empty($categories)){
+            $categories->update($request->validated());
+                return response()->json([
+                    'success'=> true,
+                    'status'=> 200,
+                    'message'=> "success",
+                    'data' => [
+                        'categories' => $categories
+                    ]
+                ]);
+        }else{
+            return response()->json([
+                'success'=> false,
+                'status'=> 404,
+                'message'=> "not found",
+                'data' => []
+            ]);
+        }
+        
         
     }
 
