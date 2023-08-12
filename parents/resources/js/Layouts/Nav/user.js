@@ -1,6 +1,5 @@
 export default [
     {
-        header: "response",
         lable: "User",
         icon: "UserCircleIcon",
         link: "users.index",
@@ -9,7 +8,6 @@ export default [
         type: "route"
     },
     {
-        header: "response",
         lable: "Role",
         icon: "KeyIcon",
         link: "roles.index",

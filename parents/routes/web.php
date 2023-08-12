@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Api\V1\CategoriesController;
+use App\Http\Controllers\Api\V1\ProductsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +45,5 @@ Route::middleware([
     Route::resource('/roles', RolesController::class);
     Route::resource('/permissions', PermissionsController::class);
     Route::resource('/categories', CategoriesController::class);
+    Route::resource('/products', ProductsController::class);
 });
