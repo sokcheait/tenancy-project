@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class SystemInformation extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'meta_field',
+        'meta_value',
+    ];
 }

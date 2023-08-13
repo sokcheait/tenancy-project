@@ -28,7 +28,7 @@ export default {
             type: String,
             default: '',
         },
-        value: {
+        modelValue: {
             type: String,
             default: '',
         },
@@ -43,9 +43,9 @@ export default {
     },
     computed:{
         model: {
-            get() { return this.value },
+            get() { return this.modelValue },
             set(newValue) { this.$emit('update:modelValue', newValue) } 
         }
-    }
+    },
 }
 </script>

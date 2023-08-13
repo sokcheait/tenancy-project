@@ -7,8 +7,9 @@ use App\Http\Controllers\RolesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Api\V1\CategoriesController;
-use App\Http\Controllers\Api\V1\ProductsController;
+// use App\Http\Controllers\Api\V1\CategoriesController;
+// use App\Http\Controllers\Api\V1\ProductsController;
+use App\Http\Controllers\Api\V1\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,7 @@ Route::middleware([
     Route::resource('/employee',EmployeeController::class);
     Route::resource('/roles', RolesController::class);
     Route::resource('/permissions', PermissionsController::class);
-    Route::resource('/categories', CategoriesController::class);
-    Route::resource('/products', ProductsController::class);
+    // Route::resource('/categories', CategoriesController::class);
+    // Route::resource('/products', ProductsController::class);
+    Route::resource('/supplier', SupplierController::class);
 });

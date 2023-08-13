@@ -2,23 +2,24 @@ export default [
     {
         header:{
             title:"Stock management",
-            action:["categories","products"]
+            action:["supplier"]
         },
-        lable: "Category",
-        icon: "SquaresPlusIcon",
-        link: "categories.index",
-        redirect: "categories.index",
-        seg: "categories",
+        lable: "Supplier",
+        icon: "TruckIcon",
+        link: "supplier.index",
+        redirect: "supplier.index",
+        seg: "supplier",
         type: "route",
-        parent: "categories"
+        parent: "supplier"
     },
-    {
-        lable: "Product",
-        icon: "CubeIcon",
-        link: "products.index",
-        redirect: "products.index",
-        seg: "products",
-        type: "route",
-        parent: "products"
-    }
+    
+    // {
+    //     lable: "Supplier",
+    //     icon: "TruckIcon",
+    //     link: "supplier.index",
+    //     redirect: "supplier.index",
+    //     seg: "supplier",
+    //     type: "route",
+    //     parent: "supplier"
+    // }
 ]

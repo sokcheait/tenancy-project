@@ -42,7 +42,7 @@ class PositionController extends Controller
             ->allowedSorts(['name', 'is_active'])
             ->allowedFilters(['name', 'is_active', $globalSearch])
             ->paginate()
-            ->withQueryString();
+            ->withQueryString();   
         $view = "Position/Index";
         return Inertia::render($view, [
             'positions' => $positions

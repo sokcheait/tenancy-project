@@ -22,9 +22,9 @@ export default {
             type: String,
             default: '',
         },
-        valueModel: {
-            type: String,
-            default: '',
+        modelValue: {
+            type: Boolean,
+            default: false,
         },
         requirest: {
             type: String,
@@ -33,19 +33,10 @@ export default {
     },
     computed:{
         model: {
-            get() { return this.valueModel },
+            get() { return this.modelValue },
             set(newValueModel) { this.$emit('update:modelValue', newValueModel) } 
         }
-    }
+    },
 }
 </script>
-<style scoped>
-  
-  input:checked {
-    background-color: #22c55e; /* bg-green-500 */
-  }
 
-  input:checked ~ span:last-child {
-    --tw-translate-x: 1.75rem; /* translate-x-7 */
-  }
-</style>
