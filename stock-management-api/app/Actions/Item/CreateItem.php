@@ -19,14 +19,12 @@ class CreateItem
         Validator::make($input, [
             'supplier_id'   =>['required'],
             'name'          =>['required'],
-            'description'   =>['required'],
             'cost'          =>['required'],
         ])->validate();
 
         $item = Item::create([
             'supplier_id'   =>$input['supplier_id'],
             'name'          =>$input['name'],
-            'description'   =>$input['description'],
             'cost'          =>$input['cost'],
             'status'        =>$input['status']
         ]);

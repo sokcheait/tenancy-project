@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\V1\SupplierController;
 use App\Http\Controllers\Api\V1\CategoriesController;
 use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
+use App\Http\Controllers\Api\V1\ReceivingOrderController;
+use App\Http\Controllers\Api\V1\BackOrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +35,8 @@ Route::middleware([
         Route::apiResource('supplier',SupplierController::class);
         Route::apiResource('item',ItemController::class);
         Route::apiResource('purchase-order',PurchaseOrderController::class);
+        Route::apiResource('receiving-order',ReceivingOrderController::class);
+        Route::apiResource('back-order',BackOrderController::class);
         
     });
 });

@@ -13,7 +13,7 @@ class PurchaseOrderController extends Controller
 {
     public function index()
     {
-        $purchase_order=PurchaseOrder::all();
+        $purchase_order=app(PurchaseOrderItem::class)->with(['purchaseOrders','items','items.suppliers'])->get();
 
         return response()->json([
             'success'   => true,

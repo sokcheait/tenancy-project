@@ -69,7 +69,7 @@ trait HttpAPI
         return $response;
     }
 
-    public function paginate($items, $perPage = 10, $page = null)
+    public function paginate($items, $perPage = 15, $page = null)
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $total = count($items);

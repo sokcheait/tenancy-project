@@ -12,7 +12,13 @@ class ItemController extends Controller
 {
     public function index()
     {
-        dd(123);
+        $item=app(Item::class)->with('suppliers')->get();
+        return response()->json([
+            'success'   => true,
+            'code'    => 200,
+            'message'   => 'success',
+            'data'      => $item
+        ]);
     }
     public function store(CreateItem $createItem ,Request $request)
     {
@@ -30,7 +36,7 @@ class ItemController extends Controller
     {
         $item=Item::find($id);
         if(!empty($item)){
-            $result = $item->with('suppliers')->get();
+            $result = $item->with('suppliers')->where('id',$id)->first();
             return response()->json([
                 'success'   => true,
                 'code'    => 200,
@@ -50,7 +56,6 @@ class ItemController extends Controller
     public function update($id,Request $request,UpdateItem $updaterItem)
     {
         $item=Item::find($id);
-
         if(!empty($item)){
             $item->with('suppliers')->get();
             $updaterItem->update($item,$request->all());
