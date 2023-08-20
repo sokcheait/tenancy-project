@@ -68,7 +68,7 @@ export default {
     },
     computed:{
         model: {
-            get() { return this.modelValue.toString() },
+            get() { return this.modelValue },
             set(newValue) { this.$emit('update:modelValue', newValue) } 
         }
     }

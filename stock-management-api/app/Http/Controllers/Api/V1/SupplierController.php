@@ -12,7 +12,7 @@ class SupplierController extends Controller
 {
     public function index()
     {
-       $supplier = Supplier::all();
+       $supplier = app(Supplier::class)->all();
        return response()->json([
             'success'   => true,
             'code'    => 200,

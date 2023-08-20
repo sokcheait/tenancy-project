@@ -49,4 +49,5 @@ Route::middleware([
     Route::resource('/supplier', SupplierController::class);
     Route::resource('/item', ItemController::class);
     Route::resource('/purchase-order',PurchaseOrderController::class);
+    Route::get('/get-item/{id}', [PurchaseOrderController::class,'getItem'])->name('get-item');
 });

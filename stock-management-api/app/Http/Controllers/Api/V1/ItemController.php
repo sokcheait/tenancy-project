@@ -96,4 +96,14 @@ class ItemController extends Controller
             ]);
         }
     }
+    public function findItem($id)
+    {
+        $item=app(Item::class)->where('supplier_id',$id)->get();
+        return response()->json([
+            'success'   => true,
+            'code'    => 200,
+            'message'   => 'success',
+            'data'      => $item
+        ]);
+    }
 }

@@ -9,6 +9,7 @@
             :placeholder="placeholder"
             type="text"
             :errors="errors"
+            :disabled="disabled"
         />
     </div>
 </template>
@@ -39,6 +40,10 @@ export default {
         errors: {
             type: String,
             default: '',
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     computed:{

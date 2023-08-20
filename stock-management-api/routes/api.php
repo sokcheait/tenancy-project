@@ -34,6 +34,7 @@ Route::middleware([
 
         Route::apiResource('supplier',SupplierController::class);
         Route::apiResource('item',ItemController::class);
+        Route::get('find-item/{id}',[ItemController::class,'findItem'])->name('api.v1.find-item');
         Route::apiResource('purchase-order',PurchaseOrderController::class);
         Route::apiResource('receiving-order',ReceivingOrderController::class);
         Route::apiResource('back-order',BackOrderController::class);

@@ -23,7 +23,7 @@ import {
 } from '@flavorly/vanilla-components';
 import { Avatar } from '@flavorly/vanilla-components'
 
-import { HomeIcon,ChevronRightIcon ,UserIcon, IconCalendar, CalendarIcon} from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon ,UserIcon, ArchiveBoxXMarkIcon, CalendarIcon} from '@heroicons/vue/24/solid'
 import { trim } from 'lodash';
 import InputText from '@/Pages/Components/Forms/InputText.vue'
 import SelectText from '@/Pages/Components/Forms/SelectText.vue'
@@ -70,11 +70,12 @@ export default {
         InputTextArea,
         ToggleSwitche,
         Avatar,
+        ArchiveBoxXMarkIcon
         
     },
     props: {
         errors: Object,
-        suppliers: Object
+        suppliers: Object,
     },
     setup() {
         const toast = useToast()
@@ -84,23 +85,31 @@ export default {
         return {
             form:useForm({
                 name: '',
-                supplier_id: '',
+                supplier_id:'',
+                item_id: '',
                 cost: '',
                 description: null,
                 status: false,
             }),
             valueErrors:'',
+            item_key:[],
+        }
+    },
+    watch: {
+        'form.supplier_id':function(value){
+            this.listItem(value);
         }
     },
     created() {
+        // this.listItem()
         // console.log(this.suppliers)
     },
     methods: {
         back() {
-            this.$inertia.replace('/item')
+            this.$inertia.replace('/purchase-order')
         },
-        submitItem() {
-            this.form.post(route('item.store'), {
+        submitPurchase() {
+            this.form.post(route('purchase-order.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.toast.success("Create item successfully");
@@ -110,6 +119,17 @@ export default {
                 },
             });
         },
+        listItem(key) {
+            if(key !=null){
+                axios.get('/get-item/'+key)
+                    .then(res => {
+                        this.item_key = res.data
+                    })
+            }
+            this.form.item_id='';
+            this.item_key=null;
+    
+        }
     }
 
 }
@@ -143,6 +163,7 @@ export default {
                         </div>
                         <input-text v-model="form.po_code" 
                                 inputLable="Purchase Order Code"
+                                :disabled="true"
                         />
                         <select-text v-model="form.supplier_id"
                                     inputLable="Supplier"
@@ -159,16 +180,16 @@ export default {
                         <div class="w-full">
                             <h3 class="text-gray-500 font-bold block p-2 ml-2 text-lg ml-1 border-b-4">Item Form</h3>
                         </div>
-                        <select-text v-model="form.supplier_id"
+                        <select-text v-model="form.item_id"
                                     inputLable="Item"
-                                    :options="suppliers"
+                                    :options="item_key"
                                     :tags="true"
                                     :clearable="true"
                                     requirest="requirest"
                                     value-attribute="value"
                                     text-attribute="text"
                                     placeholder="Please select a item"
-                                    :errors="form.errors.supplier_id"
+                                    :errors="form.errors.item_id"
                                     class="w-[25%]"
                         
                         />
@@ -192,7 +213,6 @@ export default {
                                 label="Add item"
                                 variant="primary"
                                 type="submit"
-                                @click="submitItem"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                             />
                         </div>
@@ -215,8 +235,16 @@ export default {
                                         <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                                             <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-xs">
-                                                    <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> Approved </span>
+                                                    <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
+                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" /> 
+                                                    </span>
                                                 </td>
+                                                <td class="px-4 py-3 text-xs">
+                                                    <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> 
+                                                        100 
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">$855.85</td>
                                                 <td class="px-4 py-3">
                                                     <div class="flex items-center text-sm">
                                                     <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
@@ -229,18 +257,22 @@ export default {
                                                     </div>
                                                     </div>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">$855.85</td>
-                                                <td class="px-4 py-3 text-xs">
-                                                    <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> Approved </span>
-                                                </td>
                                                 <td class="px-4 py-3 text-sm">10</td>
                                                 <td class="px-4 py-3 text-sm">$369.75</td>
                                             </tr>
 
                                             <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-xs">
-                                                    <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"> Pending </span>
+                                                    <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
+                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" /> 
+                                                    </span>
                                                 </td>
+                                                <td class="px-4 py-3 text-xs">
+                                                    <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"> 
+                                                       50 
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">$369.75</td>
                                                 <td class="px-4 py-3">
                                                     <div class="flex items-center text-sm">
                                                     <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
@@ -253,27 +285,53 @@ export default {
                                                     </div>
                                                     </div>
                                                 </td>
+                                                <td class="px-4 py-3 text-sm">23</td>
                                                 <td class="px-4 py-3 text-sm">$369.75</td>
+                                            </tr>
+
+                                            <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-xs">
-                                                    <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"> Pending </span>
+                                                    <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
+                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" /> 
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-xs">
+                                                    <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"> 
+                                                       30 
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">$369.75</td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center text-sm">
+                                                    <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                                                        <img class="object-cover w-full h-full rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;facepad=3&amp;fit=facearea&amp;s=707b9c33066bf8808c934c8ab394dff6" alt="" loading="lazy" />
+                                                        <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-semibold">Jolina Angelie</p>
+                                                        <p class="text-xs text-gray-600 dark:text-gray-400">Unemployed</p>
+                                                    </div>
+                                                    </div>
                                                 </td>
                                                 <td class="px-4 py-3 text-sm">23</td>
                                                 <td class="px-4 py-3 text-sm">$369.75</td>
                                             </tr>
+                                            
                                         </tbody>
+
                                         <tbody class="border border-t-1">
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
-                                                    <span class="float-right mr-[130px]">Sub Title</span>
+                                                    <span class="float-right mr-[180px]">Sub Total</span>
                                                 </td>
                                                 <td class="px-4 py-3 text-sm">$369.75</td>
                                             </tr>
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <ul class="list-none m-0 p-0">
-                                                        <li class="float-right"><span class="mr-[50px]">%</span></li>
+                                                        <li class="float-right"><span class="mr-[80px]">%</span></li>
                                                         <li class="float-right">
-                                                            <input type="text" class="w-[50px] h-[25px] mr-[30px]" />
+                                                            <input type="text" class="w-[50px] h-[22px] mr-[30px]" />
                                                         </li>
                                                         <li class="float-right"><span class="mr-[20px]">Discount</span></li>
                                                     </ul>
@@ -282,21 +340,43 @@ export default {
                                             </tr>
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
-                                                    <span class="float-right mr-[130px]">Tax</span>
+                                                    <ul class="list-none m-0 p-0">
+                                                        <li class="float-right"><span class="mr-[80px]">%</span></li>
+                                                        <li class="float-right">
+                                                            <input type="text" class="w-[50px] h-[22px] mr-[30px]" />
+                                                        </li>
+                                                        <li class="float-right"><span class="mr-[20px]">Tax</span></li>
+                                                    </ul>
                                                 </td>
                                                 <td class="px-4 py-3 text-sm">$369.75</td>
                                             </tr>
-                                            <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+                                            <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400 border-t-2">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
-                                                    <span class="float-right mr-[130px]">Total</span>
+                                                    <span class="float-right mr-[180px]">Total</span>
                                                 </td>
                                                 <td class="px-4 py-3 text-sm">$369.75</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="w-full px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
-                                    Hello
+                                <div class="w-full text-center px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+                                    <div class="w-full">
+                                            <Button
+                                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg mx-2"
+                                                label="Save"
+                                                variant="primary"
+                                                type="submit"
+                                                @click="submitPurchase"
+                                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+                                            />
+                                            <Button
+                                                class="w-[80px] bg-red-500 text-slate-50 text-center p-2 rounded-lg mx-2"
+                                                label="Back"
+                                                variant="error"
+                                                @click="back"
+                                            />
+                                            
+                                    </div>
                                 </div>
                             </div>
                         </div>
