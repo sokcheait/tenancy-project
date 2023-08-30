@@ -99,19 +99,6 @@ export default {
                     <template #cell(suppliers)="{ item: po }">
                         {{ po?.suppliers }}
                     </template>
-                    <!-- <template #cell(status)="{ item: item }">
-                        <div class="flex ml-6 focus:ring-0 focus:ring-offset-0 focus:border-primary-600">
-                            <span class="relative inline-flex">
-                                <span v-if="item.status" class="flex absolute h-4 w-4 top-0 right-0 -mt-1 -mr-1 z-10">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
-                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-green-600" />
-                                </span>
-                                <span v-else class="flex absolute h-4 w-4 top-0 right-0 -mt-1 -mr-1 z-10">
-                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-gray-500" />
-                                </span>
-                            </span>
-                        </div>
-                    </template> -->
                     <template #cell(actions)="{ item: po }">
                         <div class="flex">
                             <span v-if="is_superAdmin('super-admin')">

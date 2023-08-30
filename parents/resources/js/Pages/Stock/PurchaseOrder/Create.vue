@@ -84,32 +84,81 @@ export default {
     data() {
         return {
             form:useForm({
-                name: '',
                 supplier_id:'',
-                item_id: '',
-                cost: '',
-                description: null,
-                status: false,
+                po_code:'',     
+                amount:null,       
+                discount_perc: '',
+                discount: null,    
+                tax_perc: '',     
+                tax:null,          
+                remarks:'',      
+                status:false,      
+
+                item_id:'',    
+                quantity:'' ,   
+                price:'',       
+                unit:'',        
+                total:''       
             }),
             valueErrors:'',
             item_key:[],
+            item_value:'',
+            data_item:[],
+            data_cost:[],
+            cost_key:'',
+            total_item: null,
+            sub_total: null,
+            sub_price:null,
+            rel_total: null,
+            disabled_supplier:false,
+            discount_price:null,
+            tax_price:null,
+            tax_total:null,
         }
     },
     watch: {
         'form.supplier_id':function(value){
             this.listItem(value);
+        },
+        'form.item_id':function(value){
+            this.listCost(value)
+        },
+        'form.discount':function(value){
+            this.discountItem(value)
+        },
+        'form.tax':function(value){
+            this.taxItem(value)
         }
     },
     created() {
+        // this.operatorsItem()
         // this.listItem()
         // console.log(this.suppliers)
+    },
+    mounted() {
+        // this.operatorsItem()
     },
     methods: {
         back() {
             this.$inertia.replace('/purchase-order')
         },
         submitPurchase() {
-            this.form.post(route('purchase-order.store'), {
+            // this.form.supplier_id='',
+            // this.form.po_code='',     
+            // this.form.amount=null,       
+            // this.form.discount_perc= '',
+            // this.form.discount= null,    
+            // this.form.tax_perc= '',     
+            // this.form.tax=null,          
+            // this.form.remarks='',            
+            // this.form.item_id=this.data_item['item'],    
+            // this.form.quantity='',   
+            // this.form.price='',       
+            this.form.unit='',        
+            this.form.total= this.tax_price,
+            this.form.post(route('purchase-order.store',{
+                data:this.data_item
+                }), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.toast.success("Create item successfully");
@@ -123,12 +172,91 @@ export default {
             if(key !=null){
                 axios.get('/get-item/'+key)
                     .then(res => {
-                        this.item_key = res.data
+                        this.item_key = res.data.data
+                        this.data_cost = res.data.data_all
                     })
             }
-            this.form.item_id='';
+            this.form.item_id=null;
             this.item_key=null;
     
+        },
+        listCost(key){
+            if(key !=null){
+                this.item_value = this.item_key[key]
+                this.cost_key = this.data_cost[key]
+            }
+        },
+        addItem() {
+            if(this.form.quantity!='' & this.form.item_id!='' & this.form.unit!=''){
+                this.total_item = (this.form.quantity * this.cost_key).toFixed(2);
+                this.sub_price += parseFloat(this.total_item);
+                this.sub_total = this.sub_price.toFixed(2);
+                this.discount_price = this.sub_total;
+                this.tax_price = this.discount_price;
+                const items ={
+                    'quantity':this.form.quantity,
+                    'unit':this.form.unit,
+                    'item':this.form.item_id,
+                    'item_value':this.item_value,
+                    'cost':this.cost_key,
+                    'total_item':this.total_item,
+                };
+                this.data_item.push(items)
+                this.reset()
+                this.disabled_supplier=true;
+            }
+        },
+        removeItem(index) {
+            this.data_item.splice(index, 1);
+            if(this.data_item.length==0){
+                this.disabled_supplier=false;
+                this.sub_total= 0;
+            }
+            if(this.data_item.length>0){
+                if(this.data_item.length==1){
+                    this.data_item.forEach(element => 
+                        this.rel_total = Math.ceil(element.total_item),
+                    );
+                }else{
+                    this.data_item.forEach(element => 
+                        this.rel_total += Math.ceil(element.total_item),
+                    );
+                }
+                this.sub_total = this.rel_total.toFixed(2);
+                this.discount_price = this.sub_total;
+            }
+            
+        },
+        discountItem(key) {
+            if(key==''){
+                this.discount_price=this.sub_price.toFixed(2);
+            }else{
+                const discount_total = (parseFloat(key)/100);
+                const disc = this.sub_total-(this.sub_total * discount_total);
+                this.discount_price=disc.toFixed(2);
+                if(this.tax_total!=null){
+                    let purchaseTax = (parseFloat(this.discount_price) + parseFloat(this.tax_total));
+                    this.tax_price = purchaseTax.toFixed(2);
+                }else{
+                    this.tax_price=this.discount_price;
+                }
+                
+            }
+           
+        },
+        taxItem(key){
+            if(key==''){
+                this.tax_price=this.discount_price;
+            }else{
+                const tax = (parseFloat(key)/100);
+                this.tax_total  = this.discount_price * tax;
+                let purchaseTax = (parseFloat(this.discount_price) + parseFloat(this.tax_total));
+                this.tax_price = purchaseTax.toFixed(2);
+            }
+        },
+        reset() {
+            this.form.quantity='',
+            this.form.unit=''
         }
     }
 
@@ -175,6 +303,7 @@ export default {
                                     text-attribute="text"
                                     placeholder="Please select a supplier"
                                     :errors="form.errors.supplier_id"
+                                    :disabled="disabled_supplier"
                         
                         />
                         <div class="w-full">
@@ -212,8 +341,7 @@ export default {
                                 class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg ml-8"
                                 label="Add item"
                                 variant="primary"
-                                type="submit"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+                                @click="addItem"
                             />
                         </div>
                         
@@ -233,90 +361,26 @@ export default {
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                                            <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
+                                            <tr v-for="(data ,index) in data_item" :key="index" class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-xs">
                                                     <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
-                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" /> 
+                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" @click="removeItem(index)"/> 
                                                     </span>
                                                 </td>
                                                 <td class="px-4 py-3 text-xs">
                                                     <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"> 
-                                                        100 
+                                                        {{ data.quantity }} 
                                                     </span>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">$855.85</td>
+                                                <td class="px-4 py-3 text-sm">{{ data.unit }} </td>
                                                 <td class="px-4 py-3">
                                                     <div class="flex items-center text-sm">
-                                                    <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                        <img class="object-cover w-full h-full rounded-full" src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;fit=max&amp;ixid=eyJhcHBfaWQiOjE3Nzg0fQ" alt="" loading="lazy" />
-                                                        <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
-                                                    </div>
-                                                    <div>
-                                                        <p class="font-semibold">Hans Burger</p>
-                                                        <p class="text-xs text-gray-600 dark:text-gray-400">10x Developer</p>
-                                                    </div>
+                                                        <p class="font-semibold">{{ data.item_value }}</p>
                                                     </div>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">10</td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
+                                                <td class="px-4 py-3 text-sm">{{ data.cost }}</td>
+                                                <td class="px-4 py-3 text-sm">${{ data.total_item }}</td>
                                             </tr>
-
-                                            <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
-                                                <td class="px-4 py-3 text-xs">
-                                                    <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
-                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" /> 
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-3 text-xs">
-                                                    <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"> 
-                                                       50 
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
-                                                <td class="px-4 py-3">
-                                                    <div class="flex items-center text-sm">
-                                                    <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                        <img class="object-cover w-full h-full rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;facepad=3&amp;fit=facearea&amp;s=707b9c33066bf8808c934c8ab394dff6" alt="" loading="lazy" />
-                                                        <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
-                                                    </div>
-                                                    <div>
-                                                        <p class="font-semibold">Jolina Angelie</p>
-                                                        <p class="text-xs text-gray-600 dark:text-gray-400">Unemployed</p>
-                                                    </div>
-                                                    </div>
-                                                </td>
-                                                <td class="px-4 py-3 text-sm">23</td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
-                                            </tr>
-
-                                            <tr class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
-                                                <td class="px-4 py-3 text-xs">
-                                                    <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
-                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" /> 
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-3 text-xs">
-                                                    <span class="px-2 py-1 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full"> 
-                                                       30 
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
-                                                <td class="px-4 py-3">
-                                                    <div class="flex items-center text-sm">
-                                                    <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                                                        <img class="object-cover w-full h-full rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb&amp;w=200&amp;facepad=3&amp;fit=facearea&amp;s=707b9c33066bf8808c934c8ab394dff6" alt="" loading="lazy" />
-                                                        <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
-                                                    </div>
-                                                    <div>
-                                                        <p class="font-semibold">Jolina Angelie</p>
-                                                        <p class="text-xs text-gray-600 dark:text-gray-400">Unemployed</p>
-                                                    </div>
-                                                    </div>
-                                                </td>
-                                                <td class="px-4 py-3 text-sm">23</td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
-                                            </tr>
-                                            
                                         </tbody>
 
                                         <tbody class="border border-t-1">
@@ -324,41 +388,46 @@ export default {
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <span class="float-right mr-[180px]">Sub Total</span>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
+                                                <td class="px-4 py-3 text-sm">${{ sub_total }}</td>
                                             </tr>
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <ul class="list-none m-0 p-0">
                                                         <li class="float-right"><span class="mr-[80px]">%</span></li>
                                                         <li class="float-right">
-                                                            <input type="text" class="w-[50px] h-[22px] mr-[30px]" />
+                                                            <input v-model="form.discount" type="text" class="w-[60px] h-[22px] mr-[30px]" />
                                                         </li>
                                                         <li class="float-right"><span class="mr-[20px]">Discount</span></li>
                                                     </ul>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
+                                                <td class="px-4 py-3 text-sm">${{ discount_price }}</td>
                                             </tr>
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <ul class="list-none m-0 p-0">
                                                         <li class="float-right"><span class="mr-[80px]">%</span></li>
                                                         <li class="float-right">
-                                                            <input type="text" class="w-[50px] h-[22px] mr-[30px]" />
+                                                            <input v-model="form.tax" type="text" class="w-[60px] h-[22px] mr-[30px]" />
                                                         </li>
                                                         <li class="float-right"><span class="mr-[20px]">Tax</span></li>
                                                     </ul>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
+                                                <td class="px-4 py-3 text-sm">${{ tax_price }}</td>
                                             </tr>
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400 border-t-2">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <span class="float-right mr-[180px]">Total</span>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">$369.75</td>
+                                                <td class="px-4 py-3 text-sm">${{ tax_price }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
+                                <input-text-area v-model="form.remarks" 
+                                    inputLable="Remarks"
+                                    placeholder="Please input remarks"
+                                    :errors="form.errors.remarks"          
+                                />
                                 <div class="w-full text-center px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
                                     <div class="w-full">
                                             <Button

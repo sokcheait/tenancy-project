@@ -28,7 +28,6 @@ class PurchaseOrderController extends Controller
               ->column(key: 'purchase_orders')
               ->column(key: 'items.suppliers',label:"suppliers")
               ->column(key: 'items')
-              ->column(key: 'status',sortable: true)
               ->column(label: 'Actions');
         });
     }
@@ -54,14 +53,16 @@ class PurchaseOrderController extends Controller
         $responseBody = json_decode($response->getBody(), true);
         $item = $responseBody['data'];
         $object =[];
+        $cost_item=[];
         if(!empty($item)){
             foreach ($item as $key => $value)
             {
                 if($value['status']==true)
                     $object[$value['id']] = $value['name'];
+                    $cost_item[$value['id']] = $value['cost'];
             }
-            // return redirect()->route('purchase-order.create')->with('data',$object);
-            return $object;
+            $result = ['data'=>$object,'data_all'=>$cost_item];
+            return $result;
         }
         // // $view = "Stock/PurchaseOrder/Create";
         // // return Inertia::render($view,['items' => $object]);
@@ -71,9 +72,16 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         $suppliers = $this->getSupplier();
-        // $items = $this->getItem();
         $view = "Stock/PurchaseOrder/Create";
         return Inertia::render($view,['suppliers' => $suppliers]);
+    }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'supplier_id' => 'required|max:120',
+            'item_id'  => 'required|max:120',
+        ]);
+        dd($request->all());
     }
 
 }

@@ -13,6 +13,7 @@
             :clearable="clearable"
             :value-attribute="valueAttribute"
             :text-attribute="textAttribute"
+            :disabled="disabled"
         />
     </div>
 </template>
@@ -63,6 +64,10 @@ export default {
         textAttribute: {
             type: String,
             default: '',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         }
 
     },

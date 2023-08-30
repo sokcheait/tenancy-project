@@ -19,15 +19,14 @@ class UpdateItem
         Validator::make($input, [
             'supplier_id'   =>['required'],
             'name'          =>['required'],
-            'description'   =>['required'],
             'cost'          =>['required'],
         ])->validate();
 
         $result = $item->update([
-            'supplier_id'   =>$input['supplier_id'],
-            'name'          =>$input['name'],
-            'description'   =>$input['description'],
-            'cost'          =>$input['cost'],
+            'supplier_id'   =>$input['supplier_id']??null,
+            'name'          =>$input['name']??null,
+            'description'   =>$input['description']??null,
+            'cost'          =>$input['cost']??null,
             'status'        =>$input['status']
         ]);
 
