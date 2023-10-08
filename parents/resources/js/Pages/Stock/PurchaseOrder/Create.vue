@@ -26,6 +26,7 @@ import { Avatar } from '@flavorly/vanilla-components'
 import { HomeIcon,ChevronRightIcon ,UserIcon, ArchiveBoxXMarkIcon, CalendarIcon} from '@heroicons/vue/24/solid'
 import { trim } from 'lodash';
 import InputText from '@/Pages/Components/Forms/InputText.vue'
+import InputNumber from '@/Pages/Components/Forms/InputNumber.vue'
 import SelectText from '@/Pages/Components/Forms/SelectText.vue'
 import DateSelect from '@/Pages/Components/Forms/DateSelect.vue'
 import InputTextArea from '@/Pages/Components/Forms/InputTextArea.vue'
@@ -70,7 +71,8 @@ export default {
         InputTextArea,
         ToggleSwitche,
         Avatar,
-        ArchiveBoxXMarkIcon
+        ArchiveBoxXMarkIcon,
+        InputNumber
         
     },
     props: {
@@ -91,14 +93,14 @@ export default {
                 discount: null,    
                 tax_perc: '',     
                 tax:null,          
-                remarks:'',      
-                status:false,      
+                remarks:null,      
+                status:'',      
 
                 item_id:'',    
                 quantity:'' ,   
-                price:'',       
+                // price:'',       
                 unit:'',        
-                total:''       
+                total:'',      
             }),
             valueErrors:'',
             item_key:[],
@@ -142,20 +144,9 @@ export default {
         back() {
             this.$inertia.replace('/purchase-order')
         },
-        submitPurchase() {
-            // this.form.supplier_id='',
-            // this.form.po_code='',     
-            // this.form.amount=null,       
-            // this.form.discount_perc= '',
-            // this.form.discount= null,    
-            // this.form.tax_perc= '',     
-            // this.form.tax=null,          
-            // this.form.remarks='',            
-            // this.form.item_id=this.data_item['item'],    
-            // this.form.quantity='',   
-            // this.form.price='',       
-            this.form.unit='',        
-            this.form.total= this.tax_price,
+        submitPurchase() {     
+            this.form.amount= this.tax_price;
+            this.form.status="pending";
             this.form.post(route('purchase-order.store',{
                 data:this.data_item
                 }), {
@@ -196,10 +187,10 @@ export default {
                 const items ={
                     'quantity':this.form.quantity,
                     'unit':this.form.unit,
-                    'item':this.form.item_id,
+                    'item_id':this.form.item_id,
                     'item_value':this.item_value,
-                    'cost':this.cost_key,
-                    'total_item':this.total_item,
+                    'price':this.cost_key,
+                    'total':this.total_item,
                 };
                 this.data_item.push(items)
                 this.reset()
@@ -215,11 +206,11 @@ export default {
             if(this.data_item.length>0){
                 if(this.data_item.length==1){
                     this.data_item.forEach(element => 
-                        this.rel_total = Math.ceil(element.total_item),
+                        this.rel_total = Math.ceil(element.price),
                     );
                 }else{
                     this.data_item.forEach(element => 
-                        this.rel_total += Math.ceil(element.total_item),
+                        this.rel_total += Math.ceil(element.price),
                     );
                 }
                 this.sub_total = this.rel_total.toFixed(2);
@@ -378,12 +369,12 @@ export default {
                                                         <p class="font-semibold">{{ data.item_value }}</p>
                                                     </div>
                                                 </td>
-                                                <td class="px-4 py-3 text-sm">{{ data.cost }}</td>
-                                                <td class="px-4 py-3 text-sm">${{ data.total_item }}</td>
+                                                <td class="px-4 py-3 text-sm">{{ data.price }}</td>
+                                                <td class="px-4 py-3 text-sm">${{ data.total }}</td>
                                             </tr>
                                         </tbody>
 
-                                        <tbody class="border border-t-1">
+                                        <!-- <tbody class="border border-t-1">
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <span class="float-right mr-[180px]">Sub Total</span>
@@ -395,7 +386,7 @@ export default {
                                                     <ul class="list-none m-0 p-0">
                                                         <li class="float-right"><span class="mr-[80px]">%</span></li>
                                                         <li class="float-right">
-                                                            <input v-model="form.discount" type="text" class="w-[60px] h-[22px] mr-[30px]" />
+                                                            <input v-model="form.discount" type="number" class="w-[60px] h-[22px] mr-[30px]" />
                                                         </li>
                                                         <li class="float-right"><span class="mr-[20px]">Discount</span></li>
                                                     </ul>
@@ -407,9 +398,47 @@ export default {
                                                     <ul class="list-none m-0 p-0">
                                                         <li class="float-right"><span class="mr-[80px]">%</span></li>
                                                         <li class="float-right">
-                                                            <input v-model="form.tax" type="text" class="w-[60px] h-[22px] mr-[30px]" />
+                                                            <input v-model="form.tax" type="number" class="w-[60px] h-[22px] mr-[30px]" />
                                                         </li>
                                                         <li class="float-right"><span class="mr-[20px]">Tax</span></li>
+                                                    </ul>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">${{ tax_price }}</td>
+                                            </tr>
+                                            <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400 border-t-2">
+                                                <td class="px-4 py-3 text-sm" colspan="5">
+                                                    <span class="float-right mr-[180px]">Total</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">${{ tax_price }}</td>
+                                            </tr>
+                                        </tbody> -->
+                                        <tbody class="border border-t-1 bg-rose-400">
+                                            <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+                                                <td class="px-4 py-3 text-sm" colspan="5">
+                                                    <span class="float-right mr-[180px]">Sub Total</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">${{ sub_total }}</td>
+                                            </tr>
+                                            <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+                                                <td class="px-4 py-3 text-sm" colspan="5">
+                                                    <ul class="list-none m-0 p-0">
+                                                        <li class="float-right flex">
+                                                            <span class="mr-[20px] mt-8">Discount</span>
+                                                            <input-number v-model="form.discount" class="w-1/3" />
+                                                            <span class="flat-left mt-8">%</span>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">${{ discount_price }}</td>
+                                            </tr>
+                                            <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+                                                <td class="px-4 py-3 text-sm" colspan="5">
+                                                    <ul class="list-none m-0 p-0">
+                                                        <li class="float-right flex">
+                                                            <span class="mr-[20px] mt-8">Tax</span>
+                                                            <input-number v-model="form.tax" class="w-1/3" />
+                                                            <span class="flat-left mt-8">%</span>
+                                                        </li>
                                                     </ul>
                                                 </td>
                                                 <td class="px-4 py-3 text-sm">${{ tax_price }}</td>

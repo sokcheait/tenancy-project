@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Item;
 use App\Models\Supplier;
 use App\Models\PurchaseOrderItem;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class PurchaseOrder extends Model
 {
@@ -26,6 +27,14 @@ class PurchaseOrder extends Model
         'status'
     ];
 
+    // protected function poCode(): Attribute
+    // {
+    //     // return new Attribute(
+    //     //     get: fn ($value, $attributes) => $value,
+    //     //     set: fn ($value, $attributes) => 'po-000'.$attributes['po_code'],
+    //     // );
+    // }
+
     public function items()
     {
         return $this->belongsToMany(Item::class);
@@ -38,6 +47,6 @@ class PurchaseOrder extends Model
 
     public function purchaseOrderItems()
     {
-        return $this->belongsTo(PurchaseOrderItem::class,'id');
+        return $this->belongsTo(PurchaseOrderItem::class);
     }
 }

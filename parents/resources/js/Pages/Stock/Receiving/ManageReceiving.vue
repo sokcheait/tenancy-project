@@ -24,7 +24,6 @@ import {
 import { Avatar } from '@flavorly/vanilla-components'
 
 import { HomeIcon,ChevronRightIcon ,UserIcon, ArchiveBoxXMarkIcon, CalendarIcon} from '@heroicons/vue/24/solid'
-import { forEach, trim } from 'lodash';
 import InputText from '@/Pages/Components/Forms/InputText.vue'
 import InputNumber from '@/Pages/Components/Forms/InputNumber.vue'
 import SelectText from '@/Pages/Components/Forms/SelectText.vue'
@@ -66,13 +65,13 @@ export default {
         UserIcon,
         CalendarIcon,
         InputText,
+        InputNumber,
         SelectText,
         DateSelect,
         InputTextArea,
         ToggleSwitche,
         Avatar,
-        ArchiveBoxXMarkIcon,
-        InputNumber
+        ArchiveBoxXMarkIcon
         
     },
     props: {
@@ -88,23 +87,23 @@ export default {
     data() {
         return {
             form:useForm({
+                type:"po",
                 supplier_id:this.purchase_order?.supplier_id.toString(),
-                po_code:this.purchase_order?.po_code,     
+                po_code:this.purchase_order?.po_code,
+                po_id:this.purchase_order.id,    
                 amount:'',       
                 discount_perc: '',
                 discount: this.purchase_order?.discount,   
                 tax_perc: '',     
                 tax:this.purchase_order?.tax,          
                 remarks:this.purchase_order?.remarks,      
-                status:false,      
-
+                status:false,
                 item_id:'',    
-                quantity:'' ,   
+                quantity:null,   
                 // price:'',       
                 unit:'',        
                 total:'',
-                dataItem:[],
-                dataRemove:[],      
+                dataItem:[],     
             }),
             valueErrors:'',
             item_key:[],
@@ -123,12 +122,6 @@ export default {
         }
     },
     watch: {
-        'form.supplier_id':function(value){
-            this.listItem(value);
-        },
-        'form.item_id':function(value){
-            this.listCost(value)
-        },
         'form.discount':function(value){
             this.discountItem(value)
         },
@@ -139,7 +132,7 @@ export default {
     created() {
         // this.operatorsItem()
         // this.listItem()
-        // console.log(this.data_remove)
+        // console.log(this.data_item)
     },
     mounted() {
         if(this.form.supplier_id){
@@ -152,7 +145,7 @@ export default {
                 this.sub_total = this.sub_price.toFixed(2);
                 const items ={
                     'id':item.id,
-                    'quantity':item.quantity,
+                    'quantity':parseInt(item.quantity),
                     'unit':item.unit,
                     'item_id':item.item_id,
                     'item_value':item.item_value,
@@ -166,8 +159,6 @@ export default {
             this.disabled_supplier=true;
         }
         
-        // console.log(this.purchase_order)
-        // this.operatorsItem()
     },
     methods: {
         qty(key) {
@@ -185,17 +176,17 @@ export default {
         back() {
             this.$inertia.replace('/purchase-order')
         },
-        updatePurchase() {      
+        submitReceiving() {     
             this.form.amount= this.tax_price,
-            this.form.dataItem = this.data_item;
-            this.form.status="pending";
-            this.form.put(route('purchase-order.update',this.purchase_order.id),{
+            this.form.post(route('receive.store',{
+                data:this.data_item
+                }), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.toast.success("Update purchase order successfully");
+                    this.toast.success("Create receive successfully");
                 },
                 onError: () => {
-                    this.toast.error("Update purchase order Errors");
+                    this.toast.error("Create receive Errors");
                 },
             });
         },
@@ -217,30 +208,8 @@ export default {
                 this.cost_key = this.data_cost[key]
             }
         },
-        addItem() {
-            if(this.form.quantity!='' & this.form.item_id!='' & this.form.unit!=''){
-                this.total_item = (this.form.quantity * this.cost_key).toFixed(2);
-                this.sub_price = parseFloat(this.sub_total)
-                this.sub_price += parseFloat(this.total_item);
-                this.sub_total = this.sub_price.toFixed(2);
-                this.discountItem(this.form.discount);
-                this.taxItem(this.form.tax);
-                const items ={
-                    'quantity':this.form.quantity,
-                    'unit':this.form.unit,
-                    'item_id':this.form.item_id,
-                    'item_value':this.item_value,
-                    'price':this.cost_key,
-                    'total':this.total_item,
-                };
-                this.data_item.push(items)
-                this.reset()
-                this.disabled_supplier=true;
-            }
-        },
-        removeItem(index,id) {
+        removeItem(index) {
             this.data_item.splice(index, 1);
-            this.form.dataRemove.push(id);
             if(this.data_item.length==0){
                 this.disabled_supplier=false;
                 this.sub_total= 0;
@@ -248,16 +217,15 @@ export default {
             if(this.data_item.length>0){
                 if(this.data_item.length==1){
                     this.data_item.forEach(element => 
-                        this.rel_total = Math.ceil(element.total),
+                        this.rel_total = Math.ceil(element.price),
                     );
                 }else{
                     this.data_item.forEach(element => 
-                        this.rel_total += Math.ceil(element.total),
+                        this.rel_total += Math.ceil(element.price),
                     );
                 }
                 this.sub_total = this.rel_total.toFixed(2);
-                this.discountItem(this.form.discount);
-                this.taxItem(this.form.tax);
+                this.discount_price = this.sub_total;
             }
             
         },
@@ -299,20 +267,20 @@ export default {
 </script>
 
 <template>
-    <AppLayout title="purchaseOrder-create">
+    <AppLayout title="Receiving">
         <div class="p-4 w-full">
             <div class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
                 <div class="flex justify-center items-center h-4 transition-all duration-300 transform px-4">
                     <span class="-ml-4"><HomeIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
                     <span class="ml-3 mt-1">
-                        <Link :href="route('purchase-order.index')" class="text-gray-200 dark:text-white">
-                            Purchase Order
+                        <Link :href="route('item.index')" class="text-gray-200 dark:text-white">
+                            Receiving Order
                         </Link>
                     </span>
                     <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
                     <span class="ml-2 mt-1">
                         <Link href="" class="text-gray-200 dark:text-white">
-                            Edit
+                            Manage Receive
                         </Link>
                     </span>
                 </div>
@@ -321,7 +289,7 @@ export default {
                 <form @submit.prevent="submit">
                     <div class="flex flex-wrap">
                         <div class="w-full">
-                            <h3 class="text-gray-600 font-bold block p-2 mt-4 bg-gray-200 dark:bg-gray-800 dark:text-white border rounded">Purchase Order</h3>
+                            <h3 class="text-gray-600 font-bold block p-2 mt-4 bg-gray-200 dark:bg-gray-800 dark:text-white border rounded">Receive Order</h3>
                         </div>
                         <input-text v-model="form.po_code" 
                                 inputLable="Purchase Order Code"
@@ -337,47 +305,9 @@ export default {
                                     text-attribute="text"
                                     placeholder="Please select a supplier"
                                     :errors="form.errors.supplier_id"
-                                    :disabled="disabled_supplier"
+                                    :disabled="true"
                         
                         />
-                        <div class="w-full">
-                            <h3 class="text-gray-500 font-bold block p-2 ml-2 text-lg ml-1 border-b-4">Item Form</h3>
-                        </div>
-                        <select-text v-model="form.item_id"
-                                    inputLable="Item"
-                                    :options="item_key"
-                                    :tags="true"
-                                    :clearable="true"
-                                    requirest="requirest"
-                                    value-attribute="value"
-                                    text-attribute="text"
-                                    placeholder="Please select a item"
-                                    :errors="form.errors.item_id"
-                                    class="w-[25%]"
-                        
-                        />
-                        <input-text v-model="form.unit" 
-                                    inputLable="Unit"
-                                    placeholder="Please input unit"
-                                    :errors="form.errors.unit"
-                                    class="w-[25%]"
-                                    
-                        />
-                        <input-text v-model="form.quantity" 
-                                    inputLable="Quantity"
-                                    placeholder="Please input quantity"
-                                    :errors="form.errors.quantity"
-                                    class="w-[25%]"
-                                    
-                        />
-                        <div class="w-[25%] mt-9">
-                            <Button
-                                class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg ml-8"
-                                label="Add item"
-                                variant="primary"
-                                @click="addItem"
-                            />
-                        </div>
                         
                         <!-- Item Table -->
                         <div class="w-full mt-4 mx-4">
@@ -398,7 +328,7 @@ export default {
                                             <tr v-for="(data ,index) in data_item" :key="index" class="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-xs">
                                                     <span class="font-semibold leading-tight text-rose-600 bg-rose-100 rounded-full dark:bg-rose-700 dark:text-rose-100">
-                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" @click="removeItem(index,data.id)"/> 
+                                                        <ArchiveBoxXMarkIcon class="w-6 h-7 cursor-pointer" @click="removeItem(index)"/> 
                                                     </span>
                                                 </td>
                                                 <td class="px-4 py-3 text-xs">
@@ -414,7 +344,7 @@ export default {
                                                 <td class="px-4 py-3 text-sm">${{ data.total }}</td>
                                             </tr>
                                         </tbody>
-                                        <tbody class="border border-t-1">
+                                        <tbody class="border border-t-1 bg-rose-400">
                                             <tr class="bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                                                 <td class="px-4 py-3 text-sm" colspan="5">
                                                     <span class="float-right mr-[180px]">Sub Total</span>
@@ -463,10 +393,10 @@ export default {
                                     <div class="w-full">
                                             <Button
                                                 class="w-[80px] bg-primary-500 text-slate-50 text-center p-2 rounded-lg mx-2"
-                                                label="Update"
+                                                label="Save"
                                                 variant="primary"
                                                 type="submit"
-                                                @click="updatePurchase"
+                                                @click="submitReceiving"
                                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                                             />
                                             <Button

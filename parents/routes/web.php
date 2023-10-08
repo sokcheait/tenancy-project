@@ -10,6 +10,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\Api\V1\SupplierController;
 use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
+use App\Http\Controllers\Api\V1\ReceiveController;
+use App\Http\Controllers\Api\V1\BackOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,10 @@ Route::middleware([
     Route::resource('/supplier', SupplierController::class);
     Route::resource('/item', ItemController::class);
     Route::resource('/purchase-order',PurchaseOrderController::class);
+    Route::resource('/receive',ReceiveController::class);
+    Route::resource('/back-order',BackOrderController::class);
+    Route::get('/receive/manage_receiving/{id}',[ReceiveController::class,'manageReceiving'])->name('receive.manage_receiving');
     Route::get('/get-item/{id}', [PurchaseOrderController::class,'getItem'])->name('get-item');
     Route::get('/get-cost/{id}', [PurchaseOrderController::class,'getCost'])->name('get-cost');
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 });

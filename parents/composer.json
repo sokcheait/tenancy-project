@@ -18,6 +18,7 @@
         "livewire/livewire": "^2.11",
         "opcodesio/log-viewer": "^2.5",
         "protonemedia/inertiajs-tables-laravel-query-builder": "^2.2",
+        "rap2hpoutre/laravel-log-viewer": "^2.3",
         "spatie/laravel-medialibrary": "^9.0.0",
         "spatie/laravel-permission": "^5.10",
         "spatie/laravel-query-builder": "^5.2",

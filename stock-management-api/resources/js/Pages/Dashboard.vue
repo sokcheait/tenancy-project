@@ -20,3 +20,8 @@ import Welcome from '@/Components/Welcome.vue';
         </div>
     </AppLayout>
 </template>
+<style type="text/css">
+    .test{
+        position: absolute;
+    }
+</style>

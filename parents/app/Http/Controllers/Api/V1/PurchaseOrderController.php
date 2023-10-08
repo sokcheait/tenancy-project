@@ -24,10 +24,11 @@ class PurchaseOrderController extends Controller
             $table
               ->withGlobalSearch()
               ->defaultSort('name')
-              ->column(key: 'id')
+              ->column(key: 'id',label:"#N0")
               ->column(key: 'purchase_orders')
-              ->column(key: 'items.suppliers',label:"suppliers")
+              ->column(key: 'supplier_id',label:"suppliers")
               ->column(key: 'items')
+              ->column(key: 'status',label:"Status")
               ->column(label: 'Actions');
         });
     }
@@ -81,7 +82,50 @@ class PurchaseOrderController extends Controller
             'supplier_id' => 'required|max:120',
             'item_id'  => 'required|max:120',
         ]);
-        dd($request->all());
+        $response = $this->HTTP_POST_STOCK('/api/v1/purchase-order',$request->all());
+        $responseBody = json_decode($response->getBody(), true);
+        if($responseBody['code']==200){
+            return redirect()->route('purchase-order.index');
+        }else{
+            return redirect()->back();
+        }
+    }
+    public function edit($id)
+    {
+        $response = $this->HTTP_GET_PARAM_STOCK('/api/v1/purchase-order/',$id);
+        $responseBody = json_decode($response->getBody(), true);
+        $data=$responseBody['data'];
+        $purchase_order =null;
+        $purchase_order_item=null;
+        if(!empty($data)){
+            $purchase_order = $data['purchase_order'];
+            $purchase_order_item = $data['purchase_order_item'];
+        }
+        $suppliers = $this->getSupplier();
+        $view = "Stock/PurchaseOrder/Edit";
+        return Inertia::render($view,['suppliers'=>$suppliers,'purchase_order'=>$purchase_order,'purchase_order_item'=>$purchase_order_item]);
+    }
+
+    public function update($id, Request $request)
+    {
+        $response = $this->HTTP_PUT_STOCK('/api/v1/purchase-order/'.$id, $request->all());
+        $responseBody = json_decode($response->getBody(), true);
+        if($responseBody['code']==200){
+            return redirect()->route('purchase-order.index');
+        }else{
+            return redirect()->back();
+        }
+    }
+
+    public function destroy($id)
+    {
+        $response = $this->HTTP_DELETE_STOCK('/api/v1/purchase-order/'.$id);
+        $responseBody = json_decode($response->getBody(), true);
+        if($responseBody['code']==200){
+            return redirect()->route('purchase-order.index');
+        }else{
+            return redirect()->back();
+        }
     }
 
 }
