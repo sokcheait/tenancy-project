@@ -25,6 +25,7 @@ class ReceivingOrder extends Model
         'stock_ids',
         'remarks',
         'created_at',
+        'from_code'
     ];
 
     protected function createdAt(): Attribute

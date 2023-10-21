@@ -20,12 +20,8 @@ class CreateReceivingOrder
             'form_id'       =>['required'],
             'from_order'    =>['required'],
             'amount'        =>['required'],
-            // 'discount_perc' =>['nullable'],
             'discount'      =>['required'],
-            // 'tax_perc'      =>['nullable'],
             'tax'           =>['required'],
-            // 'stock_ids'     =>['required'],
-            // 'remarks'       =>['required'],
         ])->validate();
 
         $receiving_order = ReceivingOrder::create([
@@ -38,6 +34,7 @@ class CreateReceivingOrder
             'tax'           =>$input['tax'],
             'stock_ids'     =>$input['stock_ids'],
             'remarks'       =>$input['remarks'],
+            'from_code'     =>$input['from_code']
         ]);
 
         return $receiving_order;

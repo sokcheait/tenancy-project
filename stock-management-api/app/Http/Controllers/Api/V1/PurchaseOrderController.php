@@ -9,6 +9,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Actions\PurchaseOrder\CreatePurchaseOrder;
 use App\Actions\PurchaseOrder\UpdatePurchaseOrder;
+use App\Models\Stock;
 
 class PurchaseOrderController extends Controller
 {
@@ -58,6 +59,15 @@ class PurchaseOrderController extends Controller
                 'unit'      =>$po_item['unit']??null,
                 'total'     =>$po_item['total']??null,
             ]);
+            $data_stock = [
+                'item_id'   => $po_item['item_id']??null,
+                'quantity'  => $po_item['quantity']??null,
+                'unit'      => $po_item['unit']??null,
+                'price'     => $po_item['price']??null,
+                'total'     => $po_item['total']??null,
+                'type'      => 1,
+            ];
+            $this->storeStock($data_stock);
         }
 
         return response()->json([
@@ -171,5 +181,10 @@ class PurchaseOrderController extends Controller
                 'data'      => []
             ]);
          }
+    }
+    public function storeStock($request)
+    {
+        $stock = app(Stock::class)->create($request);
+        return $stock;
     }
 }

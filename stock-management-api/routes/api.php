@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\V1\ItemController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
 use App\Http\Controllers\Api\V1\ReceivingOrderController;
 use App\Http\Controllers\Api\V1\BackOrderController;
+use App\Http\Controllers\Api\V1\StockController;
+use App\Http\Controllers\Api\V1\ReturnedController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,8 @@ Route::middleware([
         Route::apiResource('purchase-order',PurchaseOrderController::class);
         Route::apiResource('receiving-order',ReceivingOrderController::class);
         Route::apiResource('back-order',BackOrderController::class);
+        Route::apiResource('stock',StockController::class);
+        Route::apiResource('returned',ReturnedController::class);
         
     });
 });

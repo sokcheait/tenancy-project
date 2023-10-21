@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('supplier_id')->nullable();
             $table->string('return_code')->nullable();
             $table->float('amount')->nullable();
-            $table->float('remarks')->nullable();
-            $table->text('stock_ids')->nullable();
+            $table->text('remarks')->nullable();
+            $table->integer('stock_ids')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
