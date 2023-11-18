@@ -7,12 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\Supplier;
 use App\Actions\Supplier\CreateSupplier;
 use App\Actions\Supplier\UpdateSupplier;
+use App\Repositores\SupplierRepositore;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->supplier = App(SupplierRepositore::class);
+    }
+
     public function index()
     {
-       $supplier = app(Supplier::class)->all();
+       $supplier = $this->supplier->get();
        return response()->json([
             'success'   => true,
             'code'    => 200,

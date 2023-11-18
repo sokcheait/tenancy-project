@@ -27,14 +27,17 @@ class ReceivingOrder extends Model
         'created_at',
         'from_code'
     ];
+    protected $casts = [
+        'created_at' => 'date:d/m/Y h:i',
+    ];
 
-    protected function createdAt(): Attribute
-    {
-        return new Attribute(
-            get: fn ($value, $attributes) => Carbon::parse($value)->format('d/m/Y H:i:s'),
-            set: fn ($value, $attributes) => Carbon::parse($value)->format('Y-m-d H:i:s'),
-        );
-    }
+    // protected function createdAt(): Attribute
+    // {
+    //     return new Attribute(
+    //         get: fn ($value, $attributes) => Carbon::parse($value)->format('d/m/Y H:i:s'),
+    //         set: fn ($value, $attributes) => Carbon::parse($value)->format('Y-m-d H:i:s'),
+    //     );
+    // }
 
     public function purchaseOrders()
     {

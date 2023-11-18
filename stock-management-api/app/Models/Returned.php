@@ -16,4 +16,13 @@ class Returned extends Model
         'remarks',
         'stock_ids',
     ];
+
+    protected $casts = [
+        'created_at' => 'date:d/m/Y h:i',
+    ];
+
+    public function suppliers()
+    {
+        return $this->belongsTo(Supplier::class,'supplier_id');
+    }
 }
