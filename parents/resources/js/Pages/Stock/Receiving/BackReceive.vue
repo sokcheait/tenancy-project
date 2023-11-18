@@ -77,8 +77,8 @@ export default {
     props: {
         errors: Object,
         suppliers: Object,
-        purchase_order: Object,
-        purchase_order_item: Object,
+        back_order: Object,
+        back_order_item: Object,
     },
     setup() {
         const toast = useToast()
@@ -87,20 +87,20 @@ export default {
     data() {
         return {
             form:useForm({
-                type:"po",
-                supplier_id:this.purchase_order?.supplier_id.toString(),
-                po_code:this.purchase_order?.po_code,
-                po_id:this.purchase_order.id,    
+                type:"bo",
+                supplier_id:this.back_order?.supplier_id.toString(),
+                bo_code:this.back_order?.bo_code,
+                bo_id:this.back_order.id,    
                 amount:'',       
                 discount_perc: '',
-                discount: this.purchase_order?.discount,   
+                discount: this.back_order?.discount,   
                 tax_perc: '',     
-                tax:this.purchase_order?.tax,          
-                remarks:this.purchase_order?.remarks,      
+                tax:this.back_order?.tax,          
+                remarks:this.back_order?.remarks,      
                 status:false,
                 item_id:'',    
                 quantity:null,   
-                // price:'',       
+                price:'',       
                 unit:'',        
                 total:'',
                 dataItem:[],     
@@ -138,9 +138,8 @@ export default {
         if(this.form.supplier_id){
             this.listItem(this.form.supplier_id);
         }
-        if(this.purchase_order_item){
-            // this.data_item = this.purchase_order_item;
-            this.purchase_order_item.forEach((item, index)=>{
+        if(this.back_order_item){
+            this.back_order_item.forEach((item, index)=>{
                 this.sub_price += parseFloat(item.total);
                 this.sub_total = this.sub_price.toFixed(2);
                 const items ={
@@ -154,8 +153,8 @@ export default {
                 };
                 this.data_item.push(items)
             })
-            this.discountItem(this.purchase_order.discount);
-            this.taxItem(this.purchase_order.tax)
+            this.discountItem(this.back_order.discount);
+            this.taxItem(this.back_order.tax)
             this.disabled_supplier=true;
         }
         
@@ -174,7 +173,7 @@ export default {
             }
         },
         back() {
-            this.$inertia.replace('/purchase-order')
+            this.$inertia.replace('/back-order')
         },
         submitReceiving() {     
             this.form.amount= this.tax_price,
@@ -280,7 +279,7 @@ export default {
                     <span class="float-left mt-[4px] ml-2"><ChevronRightIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
                     <span class="ml-2 mt-1">
                         <Link href="" class="text-gray-200 dark:text-white">
-                            Manage Receive
+                            Back Receive
                         </Link>
                     </span>
                 </div>
@@ -291,8 +290,8 @@ export default {
                         <div class="w-full">
                             <h3 class="text-gray-600 font-bold block p-2 mt-4 bg-gray-200 dark:bg-gray-800 dark:text-white border rounded">Receive Order</h3>
                         </div>
-                        <input-text v-model="form.po_code" 
-                                inputLable="Purchase Order Code"
+                        <input-text v-model="form.bo_code" 
+                                inputLable="Back Order Code"
                                 :disabled="true"
                         />
                         <select-text v-model="form.supplier_id"

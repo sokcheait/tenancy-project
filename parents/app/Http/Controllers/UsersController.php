@@ -12,16 +12,20 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
+use App\Repositores\UserRepository;
 
 
 class UsersController extends Controller
 {
-    function __construct()
+    protected $user;
+    public function __construct(UserRepository $user)
     {
          $this->middleware('permission:users.index|users.create|users.edit|users-destroy', ['only' => ['index','show']]);
          $this->middleware('permission:users.create', ['only' => ['create','store']]);
          $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
          $this->middleware('permission:users.destroy', ['only' => ['destroy']]);
+
+        $this->user = $user;
     }
 
     /**
@@ -107,7 +111,7 @@ class UsersController extends Controller
             ],
             'roles' => ['required']
         ]);
-        $user =User::create([
+        $user =$this->user->create([
             'name' => $filed['name'],
             'email' => $filed['email'],
             'password' => bcrypt($filed['password'])

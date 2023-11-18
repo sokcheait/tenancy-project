@@ -11,6 +11,7 @@ import Navigation from '@/Layouts/Navigation.vue';
 import { Cog8ToothIcon } from '@heroicons/vue/24/solid'
 import { Button, DropdownMenu, DropdownOption } from '@flavorly/vanilla-components';
 import { Dropdown as Dropdowns } from '@flavorly/vanilla-components';
+import { useDark, useToggle } from '@vueuse/core'
 
 export default {
     components: {
@@ -38,31 +39,54 @@ export default {
     },
     setup() {
       const openSetting = ref(false)
-
-      return { openSetting }
+      const isDark = useDark();
+      const toggleDark = useToggle(isDark);
+      
+      return { openSetting,isDark,toggleDark}
     },
     data() {
         return {
             loading: true,
-            isDark: '',
+            defaultLanguage: "en",
+            // language:'en',
+            languages: [
+              {
+                lang: "en",
+                name: "English",
+              },
+              {
+                lang: "km",
+                name: "ភាសាខ្មែរ",
+              }
+            ],
         }
     }, 
     created() {
-    
+      
+    },
+    mounted() {
+        window.onbeforeunload = function() {
+          localStorage.removeItem('language')
+        };   
+    },
+    computed: {
+      language: {
+        get(){
+          return this.getActiveLanguage()
+        },
+        set(lang){
+          this.setActiveLanguage(lang);
+        }
+      }
     },
     methods: {
-        // getTheme() {
-        //     if (window.localStorage.getItem('dark')) {
-        //     return JSON.parse(window.localStorage.getItem('dark'))
-        //     }
-        //     return !!window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        // },
-        setTheme(value) {
-            window.localStorage.setItem('dark', value)
+        setActiveLanguage(lang) {
+            this.$i18n.locale = lang;
+            localStorage.setItem("language", lang);
         },
-        toggleTheme() {
-            this.isDark = !this.isDark
-            this.setTheme(this.isDark)
+        getActiveLanguage() {
+          // localStorage.removeItem('language')
+          return localStorage.getItem("language") || this.defaultLanguage;
         },
         logout () {
             router.post(route('logout'));
@@ -73,7 +97,7 @@ export default {
             }, {
                 preserveState: false,
             });
-        }
+        },
     }
 
 }
@@ -81,7 +105,7 @@ export default {
 </script>
 
 <template>
-<div :class="{ 'dark': isDark }">
+<div :class="{ 'dark': isDark }" class="overflow-hidden">
     <Head :title="title" />
     <Banner />
     <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-white dark:bg-gray-700 text-black dark:text-white">
@@ -97,10 +121,10 @@ export default {
             
             </div>
             <ul class="flex items-center">
-            <li>
+            <li class="px-2 cursor-pointer">
                 <button
                 aria-hidden="true"
-                @click="toggleTheme"
+                @click="toggleDark()"
                 class="group p-2 transition-colors duration-200 rounded-full shadow-md bg-blue-200 hover:bg-blue-200 dark:bg-gray-50 dark:hover:bg-gray-200 text-gray-900 focus:outline-none"
                 >
                 <svg
@@ -139,6 +163,18 @@ export default {
                 </svg>
                 </button>
             </li>
+
+            <li class="px-2 cursor-pointer">
+                <select v-model="language" class="w-28 p-2 px-1 transition-colors duration-200 font-normal text-md
+                          rounded-lg px-2 shadow-md bg-blue-200 hover:bg-blue-200 dark:bg-gray-50 
+                          dark:hover:bg-gray-200 text-gray-900 focus:outline-none">
+                    <option :value="item.lang" v-for="(item, i) in languages" :key="i">
+                      {{ item.name }}
+                    </option>
+                </select>
+                
+            </li>
+
             <li class="px-2 cursor-pointer">
                 <div class="group w-10 h-10 text-center pt-2 transition-colors duration-200 rounded-full shadow-md bg-blue-200 hover:bg-blue-200 dark:bg-gray-50 dark:hover:bg-gray-200 text-gray-900 focus:outline-none">
                     <Dropdowns :teleport="true">

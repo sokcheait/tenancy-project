@@ -47,6 +47,17 @@ trait HttpAPI
         return $response;
     }
 
+    // public function HTTP_POST_PARAM_STOCK_PRINT($url,$param){
+    //     $header = [
+    //         'Content-Type' => 'application/json',
+    //         'Accept' => "application/json",
+    //         'Authorization' => env("Authorization_Stock")
+    //     ];
+    //     $routes = env("HTTP_STOCK").$url.$param;
+    //     $response = Http::withHeaders($header)->asForm()->post($routes);
+    //     return $response;
+    // }
+
     public function HTTP_PUT_STOCK($url,$param){
         $header = [
             'Content-Type' => 'application/json',

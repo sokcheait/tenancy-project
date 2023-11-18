@@ -2,7 +2,7 @@ export default [
     {
         header:{
             title:"Stock management",
-            action:["supplier","item","purchase-order","receive","back-order"]
+            action:["supplier","item","purchase-order","receive","back-order","stock","returned"]
         },
         lable: "Supplier",
         icon: "TruckIcon",
@@ -32,7 +32,7 @@ export default [
     },
     {
         lable: "Receiving",
-        icon: "ArrowsRightLeftIcon",
+        icon: "ClipboardDocumentListIcon",
         link: "receive.index",
         redirect: "receive.index",
         seg: "receive",
@@ -41,11 +41,29 @@ export default [
     },
     {
         lable: "Back Order",
-        icon: "ReceiptRefundIcon",
+        icon: "ArrowsRightLeftIcon",
         link: "back-order.index",
         redirect: "back-order.index",
         seg: "back-order",
         type: "route",
         parent: "back-order"
-    }
+    },
+    {
+        lable: "Stock",
+        icon: "CubeIcon",
+        link: "stock.index",
+        redirect: "stock.index",
+        seg: "stock",
+        type: "route",
+        parent: "stock"
+    },
+    {
+        lable: "Returned",
+        icon: "ArrowUturnLeftIcon",
+        link: "returned.index",
+        redirect: "returned.index",
+        seg: "returned",
+        type: "route",
+        parent: "returned"
+    },
 ]

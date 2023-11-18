@@ -1,8 +1,8 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Alert, Button } from '@flavorly/vanilla-components';
+import { Alert, Button ,Dropdown, DropdownMenu, DropdownOption} from '@flavorly/vanilla-components';
 import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon,ArrowsRightLeftIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon,ArrowsRightLeftIcon,PencilSquareIcon } from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
@@ -18,11 +18,13 @@ export default {
         ChevronRightIcon,
         ArrowsRightLeftIcon,
         UserIcon,
+        PencilSquareIcon,
         TrashIcon,
         PencilAltIcon,
         PencilIcon,
         EyeIcon,
-        Table
+        Table,
+        Dropdown, DropdownMenu, DropdownOption
     },
     props: {
         receiving_order: Object,
@@ -83,30 +85,40 @@ export default {
                     <template #cell(id)="{ item: receive }">
                         {{ receive.id }}
                     </template>
-                    <!-- <template #cell(purchase_orders)="{ item: po }">
-                        {{ po?.po_code }}
+                    <template #cell(from_code)="{ item: receive }">
+                        {{ receive.from_code }}
                     </template>
-                    <template #cell(supplier_id)="{ item: po }">
-                        {{ po.supplier_name }}
-                    </template>
-                    <template #cell(items)="{ item: po }">
-                        {{ po?.items_count }}
-                    </template> -->
                     <template #cell(actions)="{ item: receive }">
-                        <div class="flex">
-                            <span v-if="is_superAdmin('super-admin')">
-                                <Link :href="route('purchase-order.edit',receive.id)">
-                                    <PencilIcon class="text-blue-600 w-5 h-5"/>
-                                </Link>
-                            </span>
-                            <span v-if="is_superAdmin('super-admin')">
-                                <TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deletePo(receive.id)"/>
-                            </span>
-                            <span v-if="is_superAdmin('super-admin')">
-                                <Link :href="route('purchase-order.show',receive.id)">
-                                    <EyeIcon class="text-pink-400 mx-2 w-5 h-5"/>
-                                </Link>
-                            </span>
+                        <div class="flex mx-auto space-y-3 ">
+                            <DropdownMenu
+                            text=""
+                            >
+                                <div class="block px-4 py-2 text-xs text-gray-400 flex flex-col items-center justify-center border-b-2">
+                                    Manage Actions
+                                </div>
+
+                                <DropdownOption>
+                                    <div v-if="is_superAdmin('super-admin')" class="flex w-full">
+                                        <Link :href="route('receive.show',receive.id)" class="w-full">
+                                            <span class="w-[23px] float-left mt-[2px]"><EyeIcon class="text-pink-400 w-4 h-4"/></span>
+                                            <span class="text-pink-400">View</span>
+                                        </Link>
+                                    </div>
+                                </DropdownOption>
+                                <DropdownOption>
+                                    <Link :href="route('receive.edit',receive.id)" class="w-full">
+                                            <span class="w-[23px] float-left mt-[2px]"><PencilSquareIcon class="text-blue-600 w-4 h-4"/></span>
+                                            <span class="text-blue-600">Edit</span>
+                                    </Link>
+                                </DropdownOption>
+
+                                <DropdownOption>
+                                    <Link class="w-full" @click="deleteReceive(receive.id)">
+                                        <span class="w-[23px] float-left mt-[2px]"><TrashIcon class="text-rose-500 w-4 h-4"/></span>
+                                         <span class="text-rose-500">Delete</span>
+                                    </Link>
+                                </DropdownOption>
+                            </DropdownMenu>
                         </div>
                     </template>
                 </Table>

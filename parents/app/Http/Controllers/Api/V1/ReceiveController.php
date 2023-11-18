@@ -26,7 +26,8 @@ class ReceiveController extends Controller
               ->defaultSort('name')
               ->column(key: 'id',label:"#N0")
               ->column(key: 'created_at',label:"Date Created")
-              ->column(key: 'from_order',label:"From")
+            //   ->column(key: 'from_order',label:"From")
+              ->column(key: 'from_code',label:"From code")
               ->column(key: 'items_count',label:"Items")
               ->column(label: 'Actions');
         });
@@ -47,7 +48,7 @@ class ReceiveController extends Controller
         }
         
     }
-    public function manageReceiving($id)
+    public function poReceiving($id)
     {
         $response = $this->HTTP_GET_PARAM_STOCK('/api/v1/purchase-order/',$id);
         $responseBody = json_decode($response->getBody(), true);
@@ -59,7 +60,7 @@ class ReceiveController extends Controller
             $purchase_order_item = $data['purchase_order_item'];
         }
         $suppliers = $this->getSupplier();
-        $view = "Stock/Receiving/ManageReceiving";
+        $view = "Stock/Receiving/PurchaseReceive";
         return Inertia::render($view,['suppliers'=>$suppliers,'purchase_order'=>$purchase_order,'purchase_order_item'=>$purchase_order_item]);
     }
     public function store(Request $request)
@@ -71,5 +72,21 @@ class ReceiveController extends Controller
         }else{
             return redirect()->back();
         }
+    }
+
+    public function boReceiving($id)
+    {
+        $response = $this->HTTP_GET_PARAM_STOCK('/api/v1/back-order/',$id);
+        $responseBody = json_decode($response->getBody(), true);
+        $data=$responseBody['data'];
+        $back_order =null;
+        $back_order_item=null;
+        if(!empty($data)){
+            $back_order = $data['back_order'];
+            $back_order_item = $data['back_order_item'];
+        }
+        $suppliers = $this->getSupplier();
+        $view = "Stock/Receiving/BackReceive";
+        return Inertia::render($view,['suppliers'=>$suppliers,'back_order'=>$back_order,'back_order_item'=>$back_order_item]);
     }
 }

@@ -127,5 +127,17 @@ class PurchaseOrderController extends Controller
             return redirect()->back();
         }
     }
+    // public function printPDF($id)
+    // {
+    //     $response = $this->HTTP_GET_PARAM_STOCK('/api/v1/purchase-order/',$id);
+    //     $responseBody = json_decode($response->getBody(), true);
+    //     $data=$responseBody['data'];
+    //     $view = "Stock/PurchaseOrder/Index";
+    //     if(!empty($data)){
+    //         $purchase_orders = $data['purchase_order'];
+    //         $purchase_order_item = $data['purchase_order_item'];
+    //     }
+    //     return Inertia::render($view,['purchase'=>$purchase_orders,'purchase_order_item'=>$purchase_order_item]);
+    // }
 
 }

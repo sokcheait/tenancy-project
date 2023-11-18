@@ -30,6 +30,7 @@ import SelectText from '@/Pages/Components/Forms/SelectText.vue'
 import DateSelect from '@/Pages/Components/Forms/DateSelect.vue'
 import InputTextArea from '@/Pages/Components/Forms/InputTextArea.vue'
 import ToggleSwitche from '@/Pages/Components/Forms/ToggleSwitche.vue'
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
 
 export default {
     components: {
@@ -70,6 +71,7 @@ export default {
         InputTextArea,
         ToggleSwitche,
         Avatar,
+        MazPhoneNumberInput,
         
     },
     props: {
@@ -124,6 +126,8 @@ export default {
             }),
             valueErrors:'',
             valueCountry:'KH',
+            disabled:false,
+            hasError:false,
         }
     },
     created() {
@@ -226,15 +230,26 @@ export default {
                                     text-attribute="text"
                                     placeholder="Please select a gender"
                                     :errors="form.errors.gender"
+                                    class="text-gray-800"
                         
                         />
-                        <input-text v-model="form.phone" 
-                                    inputLable="Phone Number"
-                                    placeholder="Please input phone number"
-                                    requirest="requirest"
-                                    :errors="form.errors.phone"
-                                    
-                        />
+                        <div class="py-2 px-2 w-1/2">
+                            <label class="font-semibold block text-gray-500 text-sm py-1 pl-1 dark:text-white">
+                                Phone number
+                                <span class="text-rose-500">*</span>
+                            </label>
+                            <MazPhoneNumberInput
+                                v-model="form.phone"
+                                show-code-on-list
+                                :no-example="true"
+                                placeholder="Please input number"
+                                :disabled="disabled"
+                                :fetch-country="['KH']"
+                                :preferred-countries="['KH', 'TH', 'US', 'VN']"
+                                :ignored-countries="['AC']"
+                                :error="hasError"
+                            />
+                        </div>
                         <date-select v-model="form.dob"  
                                     inputLable="Date of birth"
                                     placeholder="Please select date of birth"
@@ -259,6 +274,7 @@ export default {
                                     text-attribute="name"
                                     placeholder="Please select a position"
                                     :errors="form.errors.position_id"
+                                    class="text-gray-800"
                             
                         />
                         <input-text v-model="form.staff_id" 

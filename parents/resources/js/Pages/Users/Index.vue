@@ -2,7 +2,8 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button } from '@flavorly/vanilla-components';
 import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon, DotsVerticalIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon, DotsVerticalIcon
+} from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
@@ -22,15 +23,15 @@ export default {
         PencilAltIcon,
         PencilIcon,
         EyeIcon,
-        DotsVerticalIcon
+        DotsVerticalIcon,
     },
     props: {
         users: Object,
     },
     setup() {
         const swal = Swal;
-        const toast = useToast()
-
+        const toast = useToast();
+    
         return { swal,toast }
     },
     data() {
@@ -79,23 +80,25 @@ export default {
     <AppLayout title="Users">
         <div class="w-full p-4">
             <div class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
-                <div class="flex justify-center items-center w-4 h-4 transition-all duration-300 transform px-4">
-                    <span class="ml-12"><HomeIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
+                <div class="flex justify-start items-center w-full h-4 transition-all duration-300 transform px-4">
+                    <span class=""><HomeIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
+                    <span class="mt-1 ml-2"><ChevronRightIcon class="h-6 w-6 text-gray-200 dark:text-white" /></span>
                     <span class="ml-3 mt-1">
                         <Link :href="route('users.index')" class="text-gray-200 dark:text-white">
-                            Users
+                            {{ $t('users') }}
                         </Link>
                     </span>
                 </div>
                 <div class="text-right">
                     <Link v-if="can('users.create') || is_superAdmin('super-admin')" :href="route('users.create')" class="text-gray-200 dark:text-white">
                         <Button
-                            label="Create User"
+                            :label="$t('create_user')"
                             variant="primary"
                         />
                     </Link>
                 </div>
             </div>
+            
             <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium group">    
                 <Table :resource="users">
                     <template #cell(actions)="{ item: user }">

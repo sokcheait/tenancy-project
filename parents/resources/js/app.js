@@ -13,6 +13,17 @@ import "vue-toastification/dist/index.css";
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
+import VueHtmlToPaper from 'vue-html-to-paper';
+import 'maz-ui/css/main.css';
+import { createI18n } from 'vue-i18n';
+import messages from '@/lang/messages.js';
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+
+const i18n = createI18n({
+    locale: 'en',
+    fallbackLocale: 'en',
+    messages,
+});
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -25,6 +36,8 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(Toast)
             .use(VueSweetalert2)
+            .use(i18n)
+            .use(VueHtmlToPaper)
             .use(setupCalendar, {})
             .use(VanillaComponents, Plugin)
             .use(ExclamationTriangleIcon, XMarkIcon)
