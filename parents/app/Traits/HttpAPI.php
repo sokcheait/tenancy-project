@@ -19,7 +19,8 @@ trait HttpAPI
         $header = [
             'Content-Type' => 'application/json',
             'Accept' => "application/json",
-            'Authorization' => env("Authorization_Stock")
+            'Authorization' => env("Authorization_Stock"),
+            'Accept-Language'=> app()->getLocale(session('locale'))
         ];
         $routes = env("HTTP_STOCK").$url;
         $response = Http::withHeaders($header)->asForm()->post($routes,$param);
@@ -30,7 +31,8 @@ trait HttpAPI
         $header = [
             'Content-Type' => 'application/json',
             'Accept' => "application/json",
-            'Authorization' => env("Authorization_Stock")
+            'Authorization' => env("Authorization_Stock"),
+            'Accept-Language'=> app()->getLocale(session('locale'))
         ];
         $routes = env("HTTP_STOCK").$url;
         $response = Http::withHeaders($header)->asForm()->get($routes);
@@ -40,7 +42,8 @@ trait HttpAPI
         $header = [
             'Content-Type' => 'application/json',
             'Accept' => "application/json",
-            'Authorization' => env("Authorization_Stock")
+            'Authorization' => env("Authorization_Stock"),
+            'Accept-Language'=> app()->getLocale(session('locale'))
         ];
         $routes = env("HTTP_STOCK").$url.$param;
         $response = Http::withHeaders($header)->asForm()->get($routes);
@@ -62,7 +65,8 @@ trait HttpAPI
         $header = [
             'Content-Type' => 'application/json',
             'Accept' => "application/json",
-            'Authorization' => env("Authorization_Stock")
+            'Authorization' => env("Authorization_Stock"),
+            'Accept-Language'=> app()->getLocale(session('locale'))
         ];
         $routes = env("HTTP_STOCK").$url;
         $response = Http::withHeaders($header)->asForm()->put($routes,$param);
@@ -73,7 +77,8 @@ trait HttpAPI
         $header = [
             'Content-Type' => 'application/json',
             'Accept' => "application/json",
-            'Authorization' => env("Authorization_Stock")
+            'Authorization' => env("Authorization_Stock"),
+            'Accept-Language'=> app()->getLocale(session('locale'))
         ];
         $routes = env("HTTP_STOCK").$url;
         $response = Http::withHeaders($header)->asForm()->delete($routes);

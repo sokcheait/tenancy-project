@@ -1,6 +1,6 @@
 export default [
     {
-        lable: "Employee",
+        lable: "employee",
         icon: "UserGroupIcon",
         link: "employee.index",
         redirect: "employee.index",

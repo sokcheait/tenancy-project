@@ -63,4 +63,8 @@ Route::middleware([
     Route::get('/get-item/{id}', [PurchaseOrderController::class,'getItem'])->name('get-item');
     Route::get('/get-cost/{id}', [PurchaseOrderController::class,'getCost'])->name('get-cost');
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+    Route::put('/laravel-language/{key}', function ($key) {
+        session()->put('locale', $key);
+        return redirect()->back();
+    });
 });

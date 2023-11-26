@@ -1,6 +1,6 @@
 export default [
     {
-        lable: "Position",
+        lable: "position",
         icon: "IdentificationIcon",
         link: "position.index",
         redirect: "position.index",

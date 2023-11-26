@@ -86,6 +86,7 @@ export default {
         },
         getActiveLanguage() {
           // localStorage.removeItem('language')
+          this.$inertia.put('/laravel-language/' + this.$i18n.locale);
           return localStorage.getItem("language") || this.defaultLanguage;
         },
         logout () {

@@ -29,6 +29,7 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
+    'localization'
 ])->group(function () {
     Route::group(['prefix'=>'v1'],function() {
         Route::apiResource('categories',CategoriesController::class);

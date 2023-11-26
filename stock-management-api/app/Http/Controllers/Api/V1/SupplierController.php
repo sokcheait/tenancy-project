@@ -22,7 +22,7 @@ class SupplierController extends Controller
        return response()->json([
             'success'   => true,
             'code'    => 200,
-            'message'   => 'success',
+            'message'   => __("messages.success"),
             'data'      => $supplier
         ]);
     }
@@ -33,7 +33,7 @@ class SupplierController extends Controller
         return response()->json([
             'success'   => true,
             'code'    => 200,
-            'message'   => 'success',
+            'message'   => __("messages.success"),
             'data'      => $supplier
         ]);
     }
@@ -45,7 +45,7 @@ class SupplierController extends Controller
             return response()->json([
                 'success'   => true,
                 'code'    => 200,
-                'message'   => 'Success',
+                'message'   => __("messages.success"),
                 'data'      => $supplier
             ]);
         }else{
@@ -67,7 +67,7 @@ class SupplierController extends Controller
             return response()->json([
                 'success'   => true,
                 'code'    => 200,
-                'message'   => 'Success',
+                'message'   => __("messages.success"),
                 'data'      => $supplier
             ]);
         }else{
@@ -88,7 +88,7 @@ class SupplierController extends Controller
             return response()->json([
                 'success'   => true,
                 'code'    => 200,
-                'message'   => 'Success',
+                'message'   => __("messages.success"),
                 'data'      => []
             ]);
         }else{

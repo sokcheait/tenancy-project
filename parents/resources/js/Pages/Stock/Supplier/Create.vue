@@ -98,7 +98,7 @@ export default {
             this.form.post(route('supplier.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.toast.success("Create supplier successfully", {
+                    this.toast.success(this.$page.props.jetstream.flash.message, {
                     });
                 },
                 onError: () => {

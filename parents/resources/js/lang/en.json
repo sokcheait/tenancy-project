@@ -1,5 +1,17 @@
 {
   "language_full": "English",
   "users":"Users",
-  "create_user":"Create user"
+  "create_user":"Create user",
+  "roles":"Role",
+  "employee":"Employee",
+  "position":"Position",
+  "dashboard":"Dashboard",
+  "supplier":"Supplier",
+  "item":"Item",
+  "purchase_order":"Purchase Order",
+  "receiving":"Receiving",
+  "back_order":"Back Order",
+  "stock":"Stock",
+  "returned":"Returned",
+  "stock_management":"Stock management"
 }

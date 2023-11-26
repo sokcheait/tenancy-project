@@ -1,6 +1,6 @@
 export default [
     {
-        lable: "User",
+        lable: "users",
         icon: "UserCircleIcon",
         link: "users.index",
         redirect: "users.index",
@@ -8,7 +8,7 @@ export default [
         type: "route"
     },
     {
-        lable: "Role",
+        lable: "roles",
         icon: "KeyIcon",
         link: "roles.index",
         redirect: "roles.index",

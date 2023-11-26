@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Database\QueryException;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use App\Traits\HttpAPI;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -51,7 +52,9 @@ class SupplierController extends Controller
         $response = $this->HTTP_POST_STOCK('/api/v1/supplier',$request->all());
         $responseBody = json_decode($response->getBody(), true);
         if($responseBody['code']==200){
-            return redirect()->route('supplier.index');
+            return redirect()->route('supplier.index')->with('flash',[
+                'message'=>$responseBody['message']
+            ]);
         }else{
             return redirect()->back();
         }
@@ -83,7 +86,9 @@ class SupplierController extends Controller
         $response = $this->HTTP_DELETE_STOCK('/api/v1/supplier/'.$id);
         $responseBody = json_decode($response->getBody(), true);
         if($responseBody['code']==200){
-            return redirect()->route('supplier.index');
+            return redirect()->route('supplier.index')->with('flash',[
+                'message'=>$responseBody['message']
+            ]);
         }else{
             return redirect()->back();
         }

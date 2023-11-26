@@ -37,6 +37,9 @@ export default {
             
         }
     },
+    created(){
+        // console.log(this.$page.props.flash)
+    },
     methods: {
         deleteSupplier(id) {
             this.$swal.fire(({
@@ -52,7 +55,8 @@ export default {
                     this.$inertia.delete(route('supplier.destroy',id),{
                         preserveScroll: true,
                         onSuccess: () => {
-                            this.toast.success("Your post has been deleted!", {
+                            console.log(this.$page.props.jetstream.flash.message)
+                            this.toast.success(this.$page.props.jetstream.flash.message, {
                                 
                             });
                         },

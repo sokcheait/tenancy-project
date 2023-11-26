@@ -1,10 +1,10 @@
 export default [
     {
         header:{
-            title:"Stock management",
+            title:"stock_management",
             action:["supplier","item","purchase-order","receive","back-order","stock","returned"]
         },
-        lable: "Supplier",
+        lable: "supplier",
         icon: "TruckIcon",
         link: "supplier.index",
         redirect: "supplier.index",
@@ -13,7 +13,7 @@ export default [
         parent: "supplier"
     },
     {
-        lable: "Item",
+        lable: "item",
         icon: "RectangleGroupIcon",
         link: "item.index",
         redirect: "item.index",
@@ -22,7 +22,7 @@ export default [
         parent: "item"
     },
     {
-        lable: "Purchase order",
+        lable: "purchase_order",
         icon: "ListBulletIcon",
         link: "purchase-order.index",
         redirect: "purchase-order.index",
@@ -31,7 +31,7 @@ export default [
         parent: "purchase-order"
     },
     {
-        lable: "Receiving",
+        lable: "receiving",
         icon: "ClipboardDocumentListIcon",
         link: "receive.index",
         redirect: "receive.index",
@@ -40,7 +40,7 @@ export default [
         parent: "receive"
     },
     {
-        lable: "Back Order",
+        lable: "back_order",
         icon: "ArrowsRightLeftIcon",
         link: "back-order.index",
         redirect: "back-order.index",
@@ -49,7 +49,7 @@ export default [
         parent: "back-order"
     },
     {
-        lable: "Stock",
+        lable: "stock",
         icon: "CubeIcon",
         link: "stock.index",
         redirect: "stock.index",
@@ -58,7 +58,7 @@ export default [
         parent: "stock"
     },
     {
-        lable: "Returned",
+        lable: "returned",
         icon: "ArrowUturnLeftIcon",
         link: "returned.index",
         redirect: "returned.index",

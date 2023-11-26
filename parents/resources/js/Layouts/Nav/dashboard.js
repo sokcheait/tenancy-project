@@ -1,6 +1,6 @@
 export default [
     {
-        lable: "Dashboard",
+        lable: "dashboard",
         icon: "ServerIcon",
         link: "dashboard",
         redirect: "dashboard",
