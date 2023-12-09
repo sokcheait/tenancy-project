@@ -11,13 +11,7 @@ defineProps({
 
 <template>
     <AppLayout title="API Tokens">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                API Tokens
-            </h2>
-        </template>
-
-        <div>
+        <div class = "content ml-12 transform ease-in-out duration-500 pt-20 px-2 md:px-5 pb-4">
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <ApiTokenManager
                     :tokens="tokens"
