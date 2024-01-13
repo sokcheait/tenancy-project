@@ -1,13 +1,15 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Alert, Button } from '@flavorly/vanilla-components';
-import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,EyeIcon,EllipsisVerticalIcon,Cog8ToothIcon } from '@heroicons/vue/24/solid'
+import { Alert, Button,Dialog } from '@flavorly/vanilla-components';
+import { Head, Link,useForm } from '@inertiajs/vue3';
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,
+    EyeIcon,EllipsisVerticalIcon,Cog8ToothIcon,CheckIcon,QrCodeIcon ,ViewfinderCircleIcon,XMarkIcon} from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import moment from 'moment';
 
 export default {
     components: {
@@ -16,6 +18,7 @@ export default {
         Link,
         Alert, 
         Button,
+        useForm,
         HomeIcon,
         ChevronRightIcon,
         EllipsisVerticalIcon,
@@ -27,7 +30,12 @@ export default {
         EyeIcon,
         Table,
         DropdownLink,
-        Dropdown
+        Dropdown,
+        Dialog,
+        CheckIcon,
+        QrCodeIcon,
+        ViewfinderCircleIcon,
+        XMarkIcon
     },
     props: {
         employees: Object,
@@ -40,7 +48,16 @@ export default {
     },
     data() {
         return {
-            
+            form:useForm({
+                attendance_date:'',
+                employee_id:null,
+            }),
+            open_model_attendance:false,
+            file_employee:null,
+            shift:4,
+            count_nember_work:null,
+            count_check:null,
+
         }
     },
     methods: {
@@ -73,7 +90,43 @@ export default {
                     
                 },
             })
-        }
+        },
+        attendance(employee){
+            this.open_model_attendance=true;
+            this.file_employee = employee;
+            const attendance = employee?.attendances;
+            let count_check =[];
+            let today = moment(new Date()).format("YYYY-MM-DD");
+            _.forEach(attendance,function(item) {
+                if(item.time_check_in !="" && item.attendance_date.valueOf() == today.valueOf()){
+                    count_check.push(item.time_check_in);
+                }
+                if(item.time_check_out !="" && item.attendance_date.valueOf() == today.valueOf()){
+                    count_check.push(item.time_check_out);
+                }
+            });
+            this.count_nember_work = count_check;
+
+            // this.count_check = this.shift - this.count_nember_work.length;
+        },
+        storeAttendance(){
+            this.form.attendance_date = new Date();
+            this.form.employee_id = this.file_employee.id;
+            this.form.post(route('attendance.store'), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.open_model_attendance=false;
+                    this.toast.success("Create attendance successfully");
+                },
+                onError: () => {
+                    this.toast.error("Create attendance Errors", {
+                    });
+                },
+            });
+        },
+        close(){
+            this.open_model_attendance=false;
+        },
     }
 
 }
@@ -101,16 +154,15 @@ export default {
                     </Link>
                 </div>
             </div>
-            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium group">    
+            <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium">    
                 <Table :resource="employees">
                     <template #cell(positions)="{ item: employee }">
                         <span>{{ employee.positions['0'].name }}</span>
                     </template>
                     <template #cell(actions)="{ item: employee }">
-                        <div class="flex">
+                        <div class="flex flex-wrap justify-between">
                             <Dropdown align="right" width="36">
                                 <template #trigger>
-                                    
                                     <EllipsisVerticalIcon class="w-6 h-6 cursor-pointer" />
                                     <!-- <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
                                         <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
@@ -133,10 +185,92 @@ export default {
                                     </div>
                                 </template>
                             </Dropdown>
+                            <div class="border px-2 py-1 cursor-pointer rounded-md text-gray-800 hover:bg-gray-400 hover:text-white" @click="attendance(employee)">
+                                Check Attendance
+                            </div>
                         </div>
                     </template>
                 </Table>
             </div>
+            <Dialog v-model="open_model_attendance"
+            :closeable="false"
+            >
+                <div>
+                    <div class="flex flex-wrap justify-center border border-gray-300 p-2 rounded-lg">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 mx-2 cursor-pointer border border-green-400">
+                            <CheckIcon
+                                class="h-6 w-6 text-green-600"
+                                aria-hidden="true"
+                            />
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-200 mx-2 cursor-pointer">
+                            <QrCodeIcon
+                                class="h-6 w-6 text-emerald-700"
+                                aria-hidden="true"
+                            />
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-teal-200 mx-2 cursor-pointer">
+                            <ViewfinderCircleIcon
+                                class="h-6 w-6 text-teal-700"
+                                aria-hidden="true"
+                            />
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center bg-white px-6 md:px-60 pt-1">
+                        <div class="space-y-6 border-l-2 border-dashed border-cyan-400">
+                            <div v-for="item in count_nember_work" :key="item" class="relative w-full">
+                                <div class="flex absolute top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full bg-green-100 justify-center items-center border border-green-400">
+                                    <CheckIcon
+                                        class="h-4 w-4 text-green-600"
+                                        aria-hidden="true"
+                                    />
+                                </div>
+                                <div class="ml-6">
+                                    <h4 class="font-bold text-blue-500">Frontend Development.</h4>
+                                    <p class="mt-2 max-w-screen-sm text-sm text-gray-500">Maecenas </p>
+                                    <span class="mt-1 block text-sm font-semibold text-blue-500">2007</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div v-for="item in count_check" :key="item" class="relative w-full">
+                                    <div class="flex absolute top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full bg-rose-200 justify-center items-center">
+                                        <XMarkIcon
+                                            class="h-4 w-4 text-rose-600"
+                                            aria-hidden="true"
+                                        />
+                                    </div>
+                                    
+                                    <div class="ml-6">
+                                        <h4 class="font-bold text-blue-500">Frontend Development.</h4>
+                                        <p class="mt-2 max-w-screen-sm text-sm text-gray-500">Maecenas </p>
+                                        <span class="mt-1 block text-sm font-semibold text-blue-500">2007</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 sm:mt-6">
+                    <Button
+                        type="button"
+                        class="w-full"
+                        variant="success"
+                        @click="storeAttendance"
+                        >
+                        Check
+                    </Button>
+                </div>
+                <div class="mt-5 sm:mt-6">
+                    <Button
+                        type="button"
+                        class="w-full"
+                        variant="error"
+                        @click="close"
+                        >
+                        Close
+                    </Button>
+                </div>
+            </Dialog>
         </div>
     </AppLayout>
 </template>

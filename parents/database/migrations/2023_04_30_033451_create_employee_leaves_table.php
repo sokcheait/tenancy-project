@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('employee_id')->nullable()->constrained()->cascadeOnDelete();
             $table->integer('position_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('staff_id')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();

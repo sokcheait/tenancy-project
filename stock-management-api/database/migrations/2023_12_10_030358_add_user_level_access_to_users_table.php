@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->string('dob')->nullable();
-            $table->string('age')->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('user_level_access')->nullable();
         });
     }
 
@@ -26,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn(['dob','age']);
+        Schema::table('users', function (Blueprint $table) {
+             $table->dropColumn('user_level_access');
         });
     }
 };

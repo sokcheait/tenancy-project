@@ -4,35 +4,41 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\User;
 use Illuminate\Support\Collection;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\User;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
-class UsersController extends Controller
+class RoleController extends Controller
 {
     public function index()
     {
+        $this->listsSchedule();
+        // $view = "Roles/Index";
+        // return Inertia::render($view);
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
                     $query
-                        ->orWhere('name', 'LIKE', "%{$value}%")
-                        ->orWhere('email', 'LIKE', "%{$value}%");
+                        ->orWhere('name', 'LIKE', "%{$value}%");
                 });
             });
         });
 
-        $users = QueryBuilder::for(User::class)
+        $roles = QueryBuilder::for(Role::class)
             ->defaultSort('name')
-            ->allowedSorts(['name', 'email'])
-            ->allowedFilters(['name', 'email', $globalSearch])
+            ->allowedSorts(['name'])
+            ->allowedFilters(['name', $globalSearch])
             ->paginate()
             ->withQueryString();
 
-        return Inertia::render('Users/Index', [
-            'users' => $users,
+        return Inertia::render('Roles/Index', [
+            'roles' => $roles,
         ])->table(function (InertiaTable $table) {
             $table
               ->withGlobalSearch()
@@ -45,10 +51,26 @@ class UsersController extends Controller
     }
     public function create()
     {
-        $view = "Users/Create";
-
-        return Inertia::render($view,[
-            
+        $permissions = Permission::all();
+        $list_permissions = config('role-permission.permissions');
+        return Inertia::render('Roles/Create',[
+            'permissions'=>$permissions,
+            'list_permissions'=>$list_permissions
         ]);
+    }
+
+    public function listsSchedule()
+    {
+        $start_date = "";
+
+        $period = CarbonPeriod::create('2024-01-01', '2024-01-31');
+
+        $result=[];
+        foreach ($period as $date) {
+            $date = $date->format('Y-m-d');
+            $result[] = $date;
+        }
+
+        // dd($result);
     }
 }

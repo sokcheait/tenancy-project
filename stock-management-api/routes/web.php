@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::resource('/users',UsersController::class);
+    Route::resource('/roles',RoleController::class);
     
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 });

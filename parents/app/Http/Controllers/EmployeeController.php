@@ -12,6 +12,8 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Repositores\EmployeeRepository;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -20,12 +22,15 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct()
+    protected $employee;
+    public function __construct(EmployeeRepository $employee)
     {
          $this->middleware('permission:employee.index|employee.create|employee.edit|employee.destroy', ['only' => ['index','show']]);
          $this->middleware('permission:employee.create', ['only' => ['create','store']]);
          $this->middleware('permission:employee.edit', ['only' => ['edit','update']]);
          $this->middleware('permission:employee.destroy', ['only' => ['destroy']]);
+
+        $this->employee = $employee;  
     }
 
     public function index()
@@ -47,8 +52,10 @@ class EmployeeController extends Controller
         $employees = QueryBuilder::for(Employee::class)
             ->defaultSort('first_name')
             ->allowedSorts(['first_name', 'last_name','gender','phone','is_active'])
-            ->with('positions')
+            ->with(['positions','attendances'])
+            ->withCount('attendances')
             ->allowedFilters(['first_name', 'is_active', $globalSearch])
+            ->orderBy('employees.id', 'desc')
             ->paginate()
             ->withQueryString();
         $view = "Employee/Index";
@@ -79,7 +86,6 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         $request->validate([
             'first_name' => 'required|max:120',
             'last_name'  => 'required|max:120',
@@ -89,7 +95,11 @@ class EmployeeController extends Controller
             'valide_date_form' => 'required',
             'valide_date_to' => 'required'
         ]);
-
+        $data = [
+            'valide_date_card_form'=> Carbon::parse($request->valide_date_card_form)->format('Y-m-d'),
+            'valide_date_card_to'=> Carbon::parse($request->valide_date_card_to)->format('Y-m-d'),
+            'id_card'=>$request->id_card
+        ];
         $employee = app(Employee::class)->create([
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
@@ -98,12 +108,14 @@ class EmployeeController extends Controller
             'address'    => $request->address,
             'dob'        => $request->dob,
             'age'        => $request->age,
-            'is_active'  => $request->is_active
+            'is_active'  => $request->is_active,
+            'data'       => json_encode($data,true)
         ]);
 
         app(EmployeeLeave::class)->create([
             'employee_id' => $employee->id,
             'position_id' => $request->position_id,
+            'staff_id'    => $request->staff_id,
             'start_date'  => $request->valide_date_form,
             'end_date'    => $request->valide_date_to
         ]);
@@ -111,8 +123,53 @@ class EmployeeController extends Controller
 
     }
 
-    public function edit(Employee $employee)
+    public function edit($id)
     {
-        dd($employee);
+        $employee = $this->employee->with(['positions','employeeLeave'])->find($id);
+        $positions = app(Position::class)->where('is_active','true')->get();
+        $view = "Employee/Edit";
+        return Inertia::render($view,[
+            'employee' => $employee,
+            'positions'=> $positions
+        ]);
+    }
+    public function update($id,Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|max:120',
+            'last_name'  => 'required|max:120',
+            'gender'     => 'required',
+            'position_id' => 'required',
+            'dob' => 'required',
+            'valide_date_form' => 'required',
+            'valide_date_to' => 'required'
+        ]);
+        $data = [
+            'valide_date_card_form'=> Carbon::parse($request->valide_date_card_form)->format('Y-m-d'),
+            'valide_date_card_to'=> Carbon::parse($request->valide_date_card_to)->format('Y-m-d'),
+            'id_card'=>$request->id_card
+        ];
+
+        $find_employee = $this->employee->with(['positions','employeeLeave'])->find($id);
+        $find_employee_leave = app(EmployeeLeave::class)->find($find_employee->employeeLeave->id);
+
+        $find_employee->update([
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'gender'     => $request->gender,
+            'phone'      => $request->phone,
+            'address'    => $request->address,
+            'dob'        => $request->dob,
+            'age'        => $request->age,
+            'is_active'  => $request->is_active,
+            'data'       => json_encode($data,true)
+        ]);
+        $find_employee_leave->update([
+            'position_id' => $request->position_id,
+            'staff_id'    => $request->staff_id,
+            'start_date'  => $request->valide_date_form,
+            'end_date'    => $request->valide_date_to
+        ]);
+        return redirect()->route('employee.index');
     }
 }

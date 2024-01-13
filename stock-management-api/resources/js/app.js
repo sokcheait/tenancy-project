@@ -5,6 +5,10 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { VanillaComponents } from '@flavorly/vanilla-components'
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+// import 'vue-datepicker-next/locale/zh-cn';
 import { 
     initAccordions, 
     initCarousels, 
@@ -27,6 +31,8 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
+            .use(VanillaComponents)
+            .use(DatePicker)
             .mount(el);
     },
     progress: {

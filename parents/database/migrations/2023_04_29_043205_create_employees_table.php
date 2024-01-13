@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('gender')->nullable();
+            $table->integer('age')->nullable();
+            $table->date('dob')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->boolean('is_active')->default('false')->index();

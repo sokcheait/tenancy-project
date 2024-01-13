@@ -9,7 +9,7 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Navigation from '@/Layouts/Navigation.vue';
 import { Cog8ToothIcon } from '@heroicons/vue/24/solid'
-import { Button, DropdownMenu, DropdownOption } from '@flavorly/vanilla-components';
+import { Button, DropdownMenu, DropdownOption,RichSelect, RichSelectOptionImage } from '@flavorly/vanilla-components';
 import { Dropdown as Dropdowns } from '@flavorly/vanilla-components';
 import { useDark, useToggle } from '@vueuse/core'
 
@@ -32,6 +32,7 @@ export default {
         Navigation,
         Cog8ToothIcon,
         Button,
+        RichSelect, RichSelectOptionImage
     },
     props: {
         title: String,
@@ -48,17 +49,18 @@ export default {
         return {
             loading: true,
             defaultLanguage: "en",
-            // language:'en',
-            languages: [
-              {
-                lang: "en",
-                name: "English",
-              },
-              {
-                lang: "km",
-                name: "ភាសាខ្មែរ",
-              }
-            ],
+            languages:[
+                {
+                  value: 'en',
+                  text: 'English',
+                  flag:"fi fi-sh"
+                },
+                {
+                  value: 'km',
+                  text: 'ភាសាខ្មែរ',
+                  flag:"fi fi-kh"
+                },
+              ]
         }
     }, 
     created() {
@@ -166,13 +168,24 @@ export default {
             </li>
 
             <li class="px-2 cursor-pointer">
-                <select v-model="language" class="w-28 p-2 px-1 transition-colors duration-200 font-normal text-md
-                          rounded-lg px-2 shadow-md bg-blue-200 hover:bg-blue-200 dark:bg-gray-50 
-                          dark:hover:bg-gray-200 text-gray-900 focus:outline-none">
-                    <option :value="item.lang" v-for="(item, i) in languages" :key="i">
-                      {{ item.name }}
-                    </option>
-                </select>
+                <div class="w-22 text-black dark:text-gray-50">
+                  <RichSelect
+                    v-model="language"
+                    :options="languages"
+                    :clearable="false"
+                    :hideSearchBox="true"
+                    class="w-full"
+                  >
+                    <template #label="{ option: { raw: person } }">
+                      <span :class="person?.flag"></span><span class="px-2">{{ person?.text }}</span>
+                    </template>
+                    <template #option="{ option: { raw: person },className }">
+                      <div :class="className">
+                        <span :class="person?.flag"></span><span class="px-3 py-2">{{ person?.text }}</span>
+                      </div>
+                    </template>
+                  </RichSelect>
+                </div>
                 
             </li>
 

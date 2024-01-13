@@ -111,10 +111,11 @@ export default {
                 gender: [],
                 phone: null,
                 dob:"",
-
+                age:"",
                 address: '',
                 is_active: false,
                 position_id: [],
+                staff_id:'',
                 valide_date_form: null,
                 valide_date_to: null,
 
@@ -307,21 +308,18 @@ export default {
                         <date-select v-model="form.valide_date_card_form"  
                                     inputLable="Valide date card form"
                                     placeholder="Please select valide date card form"
-                                    requirest="requirest"
                                     :masks="masks"
                                     :errors="form.errors.valide_date_card_form"
                         />
                         <date-select v-model="form.valide_date_card_to"  
                                     inputLable="Valide date card to"
                                     placeholder="Please select valide date card to"
-                                    requirest="requirest"
                                     :masks="masks"
                                     :errors="form.errors.valide_date_card_to"
                         />
                         <input-text v-model="form.id_card" 
                                     inputLable="ID Card"
                                     placeholder="Please input ID Card"
-                                    requirest="requirest"
                                     :errors="form.errors.id_card"
                                     
                         />

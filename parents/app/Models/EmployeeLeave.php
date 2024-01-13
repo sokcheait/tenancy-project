@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Employee;
 
 class EmployeeLeave extends Model
 {
@@ -14,6 +15,7 @@ class EmployeeLeave extends Model
     protected $fillable = [
         'employee_id',
         'position_id',
+        'staff_id',
         'start_date',
         'end_date'
     ];
@@ -23,4 +25,8 @@ class EmployeeLeave extends Model
         'end_date' => 'datetime',
     ];
     
+    public function employee()
+    {
+        return $this->hasOne(Employee::class,'employee_id');
+    }
 }
