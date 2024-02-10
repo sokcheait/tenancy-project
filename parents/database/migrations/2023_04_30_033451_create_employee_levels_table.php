@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('employee_leaves', function (Blueprint $table) {
+        Schema::create('employee_levels', function (Blueprint $table) {
             $table->id();
             $table->integer('employee_id')->nullable()->constrained()->cascadeOnDelete();
             $table->integer('position_id')->nullable()->constrained()->cascadeOnDelete();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employee_leaves');
+        Schema::dropIfExists('employee_levels');
     }
 };

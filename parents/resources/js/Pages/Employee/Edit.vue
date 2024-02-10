@@ -144,10 +144,10 @@ export default {
         this.form.age = this.employee?.age;
         this.form.address = this.employee?.address;
         this.form.is_active = this.employee?.is_active;
-        this.form.position_id = this.employee?.employee_leave?.position_id;
-        this.form.staff_id = this.employee?.employee_leave?.staff_id;
-        this.form.valide_date_form = this.employee?.employee_leave?.start_date;
-        this.form.valide_date_to = this.employee?.employee_leave?.end_date;
+        this.form.position_id = this.employee?.employee_level?.position_id;
+        this.form.staff_id = this.employee?.employee_level?.staff_id;
+        this.form.valide_date_form = this.employee?.employee_level?.start_date;
+        this.form.valide_date_to = this.employee?.employee_level?.end_date;
         this.form.valide_date_card_form= JSON.parse(this.employee?.data)?.valide_date_card_form;
         this.form.valide_date_card_to= JSON.parse(this.employee?.data)?.valide_date_card_to;
         this.form.id_card= JSON.parse(this.employee?.data)?.id_card;

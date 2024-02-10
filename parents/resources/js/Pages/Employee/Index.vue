@@ -1,8 +1,8 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Alert, Button,Dialog } from '@flavorly/vanilla-components';
+import { Alert, Button,Dialog, DropdownMenu, DropdownOption } from '@flavorly/vanilla-components';
 import { Head, Link,useForm } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,ClipboardDocumentCheckIcon,
     EyeIcon,EllipsisVerticalIcon,Cog8ToothIcon,CheckIcon,QrCodeIcon ,ViewfinderCircleIcon,XMarkIcon} from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
@@ -35,7 +35,8 @@ export default {
         CheckIcon,
         QrCodeIcon,
         ViewfinderCircleIcon,
-        XMarkIcon
+        XMarkIcon,
+        DropdownMenu, DropdownOption,ClipboardDocumentCheckIcon
     },
     props: {
         employees: Object,
@@ -160,34 +161,36 @@ export default {
                         <span>{{ employee.positions['0'].name }}</span>
                     </template>
                     <template #cell(actions)="{ item: employee }">
-                        <div class="flex flex-wrap justify-between">
-                            <Dropdown align="right" width="36">
-                                <template #trigger>
-                                    <EllipsisVerticalIcon class="w-6 h-6 cursor-pointer" />
-                                    <!-- <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                        <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-                                    </button> -->
-                                </template>
-                                <template #content>
-                                    <div class="block px-4 py-2 text-xs text-gray-400">
-                                        Manage Actions
+                        <div class="flex mx-auto space-y-3 ">
+                            <DropdownMenu
+                            text=""
+                            >
+                                <div class="block px-4 py-2 text-xs text-gray-400 flex flex-col items-center justify-center border-b-2">
+                                    Manage Actions
+                                </div>
+                                <DropdownOption>
+                                    <div v-if="can('employee.edit') || is_superAdmin('super-admin')" class="flex w-full">
+                                        <Link class="w-full" :href="route('employee.edit',employee.id)">
+                                            <span class="w-[23px] float-left mt-[2px]"><PencilSquareIcon class="text-blue-500 w-4 h-4"/></span>
+                                            <span class="text-blue-500">Edit</span>
+                                        </Link>
                                     </div>
-                                    <div v-if="can('employee.edit') || is_superAdmin('super-admin')">
-                                        <DropdownLink :href="route('employee.edit',employee.id)">
-                                            <PencilSquareIcon class="text-blue-600 w-4 h-4 float-left ml-2"/> Edit
-                                        </DropdownLink>
+                                </DropdownOption>
+                                <DropdownOption>
+                                    <div v-if="can('employee.edit') || is_superAdmin('super-admin')" class="flex w-full" @click="deleteEmployee(employee.id)">
+                                        <Link class="w-full" href="">
+                                            <span class="w-[23px] float-left mt-[2px]"><TrashIcon class="text-rose-500 w-4 h-4"/></span>
+                                            <span class="text-rose-500">Delete</span>
+                                        </Link>
                                     </div>
-                                    <div>
-                                        <DropdownLink href="">
-                                            <TrashIcon class="text-rose-500 float-left ml-2 w-4 h-4" @click="deleteEmployee(employee.id)"/>Delete
-                                        </DropdownLink>
-                                        
+                                </DropdownOption>
+                                <DropdownOption>
+                                    <div v-if="can('employee.edit') || is_superAdmin('super-admin')" class="flex w-full" @click="attendance(employee)">
+                                            <span class="w-[23px] float-left mt-[2px]"><ClipboardDocumentCheckIcon class="text-green-500 w-4 h-4"/></span>
+                                            <span class="text-green-500">Check Attendance</span>
                                     </div>
-                                </template>
-                            </Dropdown>
-                            <div class="border px-2 py-1 cursor-pointer rounded-md text-gray-800 hover:bg-gray-400 hover:text-white" @click="attendance(employee)">
-                                Check Attendance
-                            </div>
+                                </DropdownOption>
+                            </DropdownMenu>
                         </div>
                     </template>
                 </Table>

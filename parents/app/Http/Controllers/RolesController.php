@@ -85,7 +85,7 @@ class RolesController extends Controller
             'guard_name' => 'web'
         ]);
         $role->syncPermissions($request->permissions);
-        return Inertia::render('Role/Index');
+        return redirect()->route('roles.index');
     }
 
     public function edit(Role $role)

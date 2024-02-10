@@ -29,11 +29,11 @@ return [
             'roles.edit' => "Edit",
             'roles.destroy' => "Destroy"
         ],
-        'categories' => [
-            'categories.index' => "View",
-            'categories.create' => "create",
-            'categories.edit' => "Edit",
-            'categories.destroy' => "Destroy"
+        'attendance' => [
+            'attendance.index' => "View",
+            'attendance.create' => "create",
+            'attendance.edit' => "Edit",
+            'attendance.destroy' => "Destroy"
         ],
     ]
 ];

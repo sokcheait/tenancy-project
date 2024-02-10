@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Employee;
 
-class EmployeeLeave extends Model
+class EmployeeLevel extends Model
 {
     use HasFactory;
     use SoftDeletes;

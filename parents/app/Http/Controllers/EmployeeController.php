@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Employee;
 use App\Models\Position;
-use App\Models\EmployeeLeave;
+use App\Models\EmployeeLevel;
 use Illuminate\Support\Collection;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -112,7 +112,7 @@ class EmployeeController extends Controller
             'data'       => json_encode($data,true)
         ]);
 
-        app(EmployeeLeave::class)->create([
+        app(EmployeeLevel::class)->create([
             'employee_id' => $employee->id,
             'position_id' => $request->position_id,
             'staff_id'    => $request->staff_id,
@@ -125,7 +125,7 @@ class EmployeeController extends Controller
 
     public function edit($id)
     {
-        $employee = $this->employee->with(['positions','employeeLeave'])->find($id);
+        $employee = $this->employee->with(['positions','employeeLevel'])->find($id);
         $positions = app(Position::class)->where('is_active','true')->get();
         $view = "Employee/Edit";
         return Inertia::render($view,[
@@ -150,8 +150,8 @@ class EmployeeController extends Controller
             'id_card'=>$request->id_card
         ];
 
-        $find_employee = $this->employee->with(['positions','employeeLeave'])->find($id);
-        $find_employee_leave = app(EmployeeLeave::class)->find($find_employee->employeeLeave->id);
+        $find_employee = $this->employee->with(['positions','employeeLevel'])->find($id);
+        $find_employee_level = app(EmployeeLevel::class)->find($find_employee->employeeLevel->id);
 
         $find_employee->update([
             'first_name' => $request->first_name,
@@ -164,7 +164,7 @@ class EmployeeController extends Controller
             'is_active'  => $request->is_active,
             'data'       => json_encode($data,true)
         ]);
-        $find_employee_leave->update([
+        $find_employee_level->update([
             'position_id' => $request->position_id,
             'staff_id'    => $request->staff_id,
             'start_date'  => $request->valide_date_form,

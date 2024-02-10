@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Position;
 use App\Models\Attendance;
-use App\Models\EmployeeLeave;
+use App\Models\EmployeeLevel;
 
 // use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
 
@@ -37,7 +37,7 @@ class Employee extends Model
 
     public function positions()
     {
-        return $this->belongsToMany(Position::class,'employee_leaves');
+        return $this->belongsToMany(Position::class,'employee_levels');
     }
 
     public function attendances()
@@ -45,8 +45,8 @@ class Employee extends Model
         return $this->hasMany(Attendance::class);
     }
 
-    public function employeeLeave()
+    public function employeeLevel()
     {
-        return $this->hasOne(EmployeeLeave::class);
+        return $this->hasOne(EmployeeLevel::class);
     }
 }
