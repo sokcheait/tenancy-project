@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\BackOrderController;
 use App\Http\Controllers\Api\V1\ReturnedController;
 use App\Http\Controllers\Api\V1\StockController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ShiftController;
 use App\Models\Attendance;
 
 /*
@@ -49,9 +50,15 @@ Route::middleware([
     Route::get('/users/face/user',[UsersController::class,'faceUser'])->name('users.face.user');
     Route::resource('/position',PositionController::class);
     Route::resource('/employee',EmployeeController::class);
+    Route::post('/upload-face',[EmployeeController::class,'uploadFace'])->name('upload-face');
     Route::resource('/attendance',AttendanceController::class);
+    Route::get('/scan_attendance',[AttendanceController::class,'scanAttendance'])->name('scan_attendance');
+    Route::get('/call-employee-qr/{id}',[AttendanceController::class,'callEmployeeQR'])->name('call-employee-qr');
+    Route::post('/scan-attendance-face',[AttendanceController::class,'scanAttendanceFace'])->name('scan-attendance-face');
     Route::get('/attendance/export/excel',[AttendanceController::class,'attendanceExcel'])->name('attendance.export.excel');
     Route::resource('/roles', RolesController::class);
+    Route::resource('/shift', ShiftController::class);
+    Route::post('/shift/connect-shift',[ShiftController::class,'connectShift'])->name('shift.connect-shift');
     // Route::resource('/permissions', PermissionsController::class);
     // Route::resource('/categories', CategoriesController::class);
     Route::resource('/supplier', SupplierController::class);

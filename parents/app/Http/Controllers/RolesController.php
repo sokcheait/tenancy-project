@@ -108,7 +108,7 @@ class RolesController extends Controller
      */
     public function show($id)
     {
-        //
+        dd($id);
     }
 
     /**
@@ -141,6 +141,8 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $role = app(Role::class)->find($id);
+        $role->delete();
+        return redirect()->back();
     }
 }

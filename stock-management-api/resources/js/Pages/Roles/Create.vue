@@ -1,10 +1,11 @@
 <script>
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router,useForm } from '@inertiajs/vue3';
 import {Cog8ToothIcon } from '@heroicons/vue/24/solid'
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
 import { Input,RichSelect } from '@flavorly/vanilla-components'
+import { useToast } from "vue-toastification";
 
 export default {
     components: {
@@ -15,33 +16,84 @@ export default {
         ref,
         Table,
         Input,
-        RichSelect
+        RichSelect,
+        useForm,
     },
     props: {
         title: String,
         errors: Object,
         list_permissions: Object,
+        permissions: Object
     },
     setup() {
-      
+        const toast = useToast();
+
+        return { toast}
     },
     data() {
         return {
-            
+            form:useForm({
+                name:'',
+                data_permissions:[]
+            }),
+            isCheckAll:[],
+            isValue:[],
         }
     }, 
     created() {
-      
+    //   console.log(this.selected)
     },
     mounted() {
           
     },
     computed: {
-      
+        
     },
     methods: {
+        checkAll: function(data,key){
+            if(this.isCheckAll[key]==true){
+                data.forEach((value, index) => {
+                    this.form.data_permissions.push(value);
+                });
+            }else{
+                this.form.data_permissions = this.form.data_permissions.filter(x => !data.includes(x));
+            }
+        },
+        updateCheckall: function(e,key){
+            if(e.target.checked==true) {
+                this.isValue.push(e.target.value)
+            }else if(e.target.checked==false){
+                this.isValue = this.removeArrValue(this.isValue,e.target.value)
+            }
+            var removeIndex = Object.keys(this.list_permissions[key]).filter(x => !this.isValue.includes(x));
+            if(removeIndex.length==0){
+                this.isCheckAll[key]=true;
+            }else{
+                this.isCheckAll[key]=false;
+            }
+        },
+        removeArrValue(arr,value) {
+            var index = arr.indexOf(value);
+            if (index > -1) {
+                arr.splice(index, 1);
+            }
+            return arr;
+        },
         btnCancel() {
             this.$inertia.replace(this.route('users.index'))
+        },
+        saveRole() {
+            this.form.post(this.route('roles.store'), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.toast.success("Create roles successfully", {
+                    });
+                },
+                onError: () => {
+                    this.toast.errors("Create roles Errors", {
+                    });
+                },
+            });
         }
     }
 
@@ -49,7 +101,7 @@ export default {
 </script>
 
 <template>
-    <AppLayout title="User">
+    <AppLayout title="Role">
         <div class="px-4 pt-6">
             <nav class = "flex px-5 py-3 text-gray-600 rounded-lg bg-gray-100 dark:bg-[#1E293B] " aria-label="Breadcrumb">
                 <ol class = "inline-flex items-center space-x-1 md:space-x-3">
@@ -88,30 +140,30 @@ export default {
                                         <span class="text-rose-500">*</span>
                                     </label>
                                     <Input
-                                        v-model="name"
+                                        v-model="form.name"
                                         placeholder="Please input name"
+                                        :errors="form.errors.name"
                                       />
                                 </div>
                             </div>
                             <div class="py-2 px-2 w-full text-gray-400">
-                                <div class="py-2 px-2 w-1/2 text-gray-400">
-                                    <label class="font-semibold block text-gray-500 text-md py-1 pl-1 dark:text-white">
-                                        <span class="">Permission</span>
-                                    </label>
-                                </div>
-                                <div class="py-2 px-2 w-full text-gray-400 border-t-2 flex flex-wrap">
-                                    Checkbox
+                                <div v-for="(permissions,ind) in list_permissions" :key="ind" class="px-4">
+                                    <input type='checkbox' @change="checkAll(Object.keys(permissions),ind)" v-model="isCheckAll[ind]" v-bind:value="ind"> {{ ind }}
+                                    <!-- Checkboxes list -->
+                                    <ul>
+                                        <li v-for="(permission,index ) in permissions" :key="index" class="ml-6">
+                                            <input type='checkbox' v-bind:value="index" v-model='form.data_permissions' @change="updateCheckall($event,ind)" class="">{{ permission }}
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            
-
                             <div class="w-full flex flex-wrap grid justify-items-end mt-4">
                                 <div class="p-3">
-                                    <Button class="py-2 px-3 rounded-lg bg-rose-500 text-sm text-white mr-2" @click="btnCancel"
-                                    >Cancel</Button>
-                                    <Button
+                                    <Button @click="saveRole"
                                         class="py-2 px-3 rounded-lg bg-sky-500 text-sm text-white mr-2"
                                     >Save</Button>
+                                    <Button class="py-2 px-3 rounded-lg bg-rose-500 text-sm text-white mr-2" @click="btnCancel"
+                                    >Cancel</Button>
                                 </div>
                             </div>
                         </div>

@@ -74,7 +74,6 @@ export default {
             if(value.length==0){
                 this.isCheckAll=[];
             }
-            console.log(value)
         }
     },
     methods: {
@@ -97,7 +96,6 @@ export default {
                 data.forEach((value, index) => {
                     this.form.permissions.push(value);
                 });
-                // console.log(this.form.permissions)
             }else{
                 // console.log(this.form.permissions.filter(x => !data.includes(x)))
                 this.loading(key);

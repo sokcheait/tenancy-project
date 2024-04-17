@@ -13,14 +13,23 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use App\Jobs\CreatePermissionsJob;
 
 class RoleController extends Controller
 {
     public function index()
     {
-        $this->listsSchedule();
-        // $view = "Roles/Index";
-        // return Inertia::render($view);
+        $list_permissions = config('role-permission.permissions');
+        foreach ($list_permissions as $permission) {
+            $arr = collect($permission);
+            $arr->filter(function ($value, $key) {
+                $permiss = Permission::where('name', $key)->first();
+                if (is_null($permiss)) {
+                    CreatePermissionsJob::dispatch();
+                }
+            });
+           
+        }
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
@@ -45,7 +54,6 @@ class RoleController extends Controller
               ->defaultSort('name')
               ->column(key: 'id')
               ->column(key: 'name', searchable: true, sortable: true, canBeHidden: false)
-              ->column(key: 'email', searchable: true, sortable: true)
               ->column(label: 'Actions');
         });
     }
@@ -59,18 +67,34 @@ class RoleController extends Controller
         ]);
     }
 
-    public function listsSchedule()
+    public function store(Request $request)
     {
-        $start_date = "";
+        $request->validate([
+            'name' => 'required',
+            'data_permissions' => 'required',
+        ]);
+        // dd($request->all());
+        $role = Role::create([
+            'name' => $request->name,
+            'guard_name' => 'web'
+        ]);
+        $role->syncPermissions($request->data_permissions);
 
-        $period = CarbonPeriod::create('2024-01-01', '2024-01-31');
-
-        $result=[];
-        foreach ($period as $date) {
-            $date = $date->format('Y-m-d');
-            $result[] = $date;
-        }
-
-        // dd($result);
+        return redirect()->route('roles.index');
     }
+
+    // public function listsSchedule()
+    // {
+    //     $start_date = "";
+
+    //     $period = CarbonPeriod::create('2024-01-01', '2024-01-31');
+
+    //     $result=[];
+    //     foreach ($period as $date) {
+    //         $date = $date->format('Y-m-d');
+    //         $result[] = $date;
+    //     }
+
+    //     // dd($result);
+    // }
 }

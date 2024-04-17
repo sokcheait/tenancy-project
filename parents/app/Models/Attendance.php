@@ -15,7 +15,13 @@ class Attendance extends Model
         'attendance_date',
         'time_check_in',
         'time_check_out',
-        'timestamping'
+        'timestamping',
+        'check_in_type',
+        'check_out_type',
+        'data',
+    ];
+    protected $casts = [
+        'data' => 'array',
     ];
 
     public function employee()

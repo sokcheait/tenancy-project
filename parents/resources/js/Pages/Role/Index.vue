@@ -1,8 +1,8 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Alert, Button } from '@flavorly/vanilla-components';
+import { Alert, Button,DropdownMenu, DropdownOption } from '@flavorly/vanilla-components';
 import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon, DotsVerticalIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,PencilIcon,EyeIcon, DotsVerticalIcon } from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
@@ -22,7 +22,9 @@ export default {
         PencilAltIcon,
         PencilIcon,
         EyeIcon,
-        DotsVerticalIcon
+        DotsVerticalIcon,
+        DropdownMenu, DropdownOption,
+        PencilSquareIcon
     },
     props: {
         roles: Object,
@@ -50,7 +52,7 @@ export default {
                 confirmButtonText: "Yes, Delete it!"
             })).then((result) => { 
                 if (result.value) { 
-                    this.$inertia.delete(route('users.destroy',userId),{
+                    this.$inertia.delete(route('roles.destroy',userId),{
                         preserveScroll: true,
                         onSuccess: () => {
                             this.toast.success("Your post has been deleted!", {
@@ -62,7 +64,7 @@ export default {
             });
         },
         showUser(id) {
-            this.$inertia.get(route('users.show',id),{
+            this.$inertia.get(route('roles.show',id),{
                 preserveScroll: true,
                 onSuccess: () => {
                     
@@ -98,7 +100,7 @@ export default {
             </div>
             <div class="dark:bg-gray-800 shadow-lg rounded-md p-2 dark:border-gray-600 font-medium group">    
                 <Table :resource="roles">
-                    <template #cell(actions)="{ item: role }">
+                    <!-- <template #cell(actions)="{ item: role }">
                         <div class="flex">
                             <span v-if="can('roles.edit') || is_superAdmin('super-admin')">
                                 <Link :href="route('roles.edit',role.id)">
@@ -107,6 +109,41 @@ export default {
                             </span>
                             <span v-if="can('roles.destroy') || is_superAdmin('super-admin')"><TrashIcon class="text-rose-500 mx-2 cursor-pointer w-6 h-5" @click="deleteUser(role.id)"/></span>
                             <span v-if="can('roles.index') || is_superAdmin('super-admin')"><EyeIcon class="text-blue-500 mx-1 cursor-pointer w-6 h-5" @click="showUser(role.id)" /></span>
+                        </div>
+                    </template> -->
+                    <template #cell(actions)="{ item: role }">
+                        <div class="flex mx-auto space-y-3 ">
+                            <DropdownMenu
+                            text=""
+                            >
+                                <div class="block px-4 py-2 text-xs text-gray-400 flex flex-col items-center justify-center border-b-2">
+                                    Manage Actions
+                                </div>
+                                <DropdownOption>
+                                    <div v-if="can('roles.edit') || is_superAdmin('super-admin')" class="flex w-full">
+                                        <Link class="w-full" :href="route('roles.edit',role.id)">
+                                            <span class="w-[23px] float-left mt-[2px]"><PencilSquareIcon class="text-blue-500 w-4 h-4"/></span>
+                                            <span class="text-blue-500">Edit</span>
+                                        </Link>
+                                    </div>
+                                </DropdownOption>
+                                <DropdownOption>
+                                    <div v-if="can('roles.destroy') || is_superAdmin('super-admin')" class="flex w-full" @click="deleteUser(role.id)">
+                                        <Link class="w-full" href="">
+                                            <span class="w-[23px] float-left mt-[2px]"><TrashIcon class="text-rose-500 w-4 h-4"/></span>
+                                            <span class="text-rose-500">Delete</span>
+                                        </Link>
+                                    </div>
+                                </DropdownOption>
+                                <DropdownOption>
+                                    <div v-if="can('roles.index') || is_superAdmin('super-admin')" class="flex w-full" @click="showUser(role.id)">
+                                        <Link class="w-full" href="">
+                                            <span class="w-[23px] float-left mt-[2px]"><EyeIcon class="text-green-500 w-4 h-4"/></span>
+                                            <span class="text-green-500">Show</span>
+                                        </Link>
+                                    </div>
+                                </DropdownOption>
+                            </DropdownMenu>
                         </div>
                     </template>
                 </Table>

@@ -19,9 +19,8 @@ export default {
         moment,
     },
     props: {
-        title: String,
         errors: Object,
-        users: Object
+        roles: Object
     },
     setup() {
       
@@ -108,13 +107,14 @@ export default {
                     </div>
                 </div>
                 <div class="min-w-full overflow-x-auto bg-gray-100 rounded-lg">
-                    <!-- <div class="overflow-hidden shadow sm:rounded-lg p-2">
+                    <div class="overflow-hidden shadow sm:rounded-lg p-2">
                         <Table :resource="roles">
                             
                         </Table>
-                    </div> -->
-                    <div class="px-2 py-4 w-[250px] text-gray-900">
-                        <!-- <input type="text" name="searchDate" v-model="searchDate" class="px-3 py-1 border"> -->
+                    </div>
+
+
+                    <!-- <div class="px-2 py-4 w-[250px] text-gray-900">
                         <date-picker v-model:value="searchDate" type="month" class="text-gray-900"></date-picker>
                     </div>
                     <div class="px-2 pb-4">
@@ -135,7 +135,7 @@ export default {
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

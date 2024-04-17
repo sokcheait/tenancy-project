@@ -18,6 +18,9 @@ import 'maz-ui/css/main.css';
 import { createI18n } from 'vue-i18n';
 import messages from '@/lang/messages.js';
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import VueQrcode from '@chenfengyuan/vue-qrcode';
 
 const i18n = createI18n({
     locale: 'en',
@@ -32,6 +35,7 @@ createInertiaApp({
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
+            .component(VueQrcode.name, VueQrcode)
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(Toast)
@@ -41,6 +45,7 @@ createInertiaApp({
             .use(setupCalendar, {})
             .use(VanillaComponents, Plugin)
             .use(ExclamationTriangleIcon, XMarkIcon)
+            .use(VueDatePicker)
             .mixin({methods: {
                 can: function(permissions) {
                     var param = Array(permissions)

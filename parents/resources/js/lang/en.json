@@ -5,7 +5,7 @@
   "roles":"Role",
   "employee":"Employee",
   "attendance":"Attendance",
-  "position":"Position",
+  "position":"Positions",
   "dashboard":"Dashboard",
   "supplier":"Supplier",
   "item":"Item",
@@ -14,5 +14,7 @@
   "back_order":"Back Order",
   "stock":"Stock",
   "returned":"Returned",
-  "stock_management":"Stock management"
+  "stock_management":"Stock management",
+  "shift": "Shift",
+  "scan_attendance": "Scan attendance"
 }

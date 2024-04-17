@@ -35,11 +35,6 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        // $employees = app(Employee::class)->with('positions')->get();
-        // $view = "Employee/Index";
-        // return Inertia::render($view,[
-        //     'employees' => $employees
-        // ]);
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
@@ -52,7 +47,11 @@ class EmployeeController extends Controller
         $employees = QueryBuilder::for(Employee::class)
             ->defaultSort('first_name')
             ->allowedSorts(['first_name', 'last_name','gender','phone','is_active'])
-            ->with(['positions','attendances'])
+            ->with(['positions','attendances',
+                'positions.shifts'=> function ($query) {
+                    $query->where('shift_allowance',true);
+                }
+            ])
             ->withCount('attendances')
             ->allowedFilters(['first_name', 'is_active', $globalSearch])
             ->orderBy('employees.id', 'desc')
@@ -71,6 +70,7 @@ class EmployeeController extends Controller
               ->column(key: 'phone',sortable: true)
               ->column(key: 'positions')
               ->column(key: 'is_active',sortable: true)
+              ->column(key: 'position_shifts',label:"Shift")
               ->column(label: 'Actions');
         });
     }
@@ -171,5 +171,16 @@ class EmployeeController extends Controller
             'end_date'    => $request->valide_date_to
         ]);
         return redirect()->route('employee.index');
+    }
+
+    public function uploadFace(Request $request)
+    {
+        $employee = $this->employee->find($request->emp_id);
+        if($request->hasFile('face_employee')){
+            $employee->getFirstMedia('face_employee')->delete();
+            $employee->addMedia($request->file('face_employee'))->toMediaCollection('face_employee');
+        }
+        // dd($request->face_employee);
+        return redirect()->back();
     }
 }

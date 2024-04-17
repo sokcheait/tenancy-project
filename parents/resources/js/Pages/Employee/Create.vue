@@ -299,7 +299,7 @@ export default {
                                     :errors="form.errors.valide_date_to"
                         />
 
-                        <div class="w-full">
+                        <div class="w-full cursor-pointer">
                             <h3 class="text-gray-600 font-bold block p-2 mt-4 bg-gray-200 dark:bg-gray-800 dark:text-white border rounded">Personnel information</h3>
                         </div>
                         <div class="">

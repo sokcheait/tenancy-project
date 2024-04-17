@@ -7,20 +7,22 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { VanillaComponents } from '@flavorly/vanilla-components'
 import DatePicker from 'vue-datepicker-next';
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 import 'vue-datepicker-next/index.css';
 // import 'vue-datepicker-next/locale/zh-cn';
-import { 
-    initAccordions, 
-    initCarousels, 
-    initCollapses, 
-    initDials, 
-    initDismisses, 
-    initDrawers, 
-    initDropdowns, 
-    initModals, 
-    initPopovers, 
-    initTabs, 
-    initTooltips } from 'flowbite';
+// import { 
+//     initAccordions, 
+//     initCarousels, 
+//     initCollapses, 
+//     initDials, 
+//     initDismisses, 
+//     initDrawers, 
+//     initDropdowns, 
+//     initModals, 
+//     initPopovers, 
+//     initTabs, 
+//     initTooltips } from 'flowbite';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -33,6 +35,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(VanillaComponents)
             .use(DatePicker)
+            .use(Toast)
             .mount(el);
     },
     progress: {

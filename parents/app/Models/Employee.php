@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\Position;
 use App\Models\Attendance;
 use App\Models\EmployeeLevel;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-// use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
-
-class Employee extends Model
+class Employee extends Model implements HasMedia
 {
     use HasFactory;
     use SoftDeletes;
-    // use UsesMinIOServer;
+    use InteractsWithMedia;
 
+    protected $appends = ['face_employee'];
     protected $fillable = [
         'id',
         'first_name',
@@ -48,5 +50,10 @@ class Employee extends Model
     public function employeeLevel()
     {
         return $this->hasOne(EmployeeLevel::class);
+    }
+
+    public function getFaceEmployeeAttribute()
+    {
+        return (empty($this->getFirstMedia('face_employee'))) ? "" : $this->getFirstMedia('face_employee')->getTemporaryUrl(\Carbon\Carbon::now()->addMinutes(10));
     }
 }
