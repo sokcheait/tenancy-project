@@ -11,7 +11,8 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use DB;    
+use DB;
+use App\Jobs\CreateRolePermission;    
 
 
 class RolesController extends Controller
@@ -47,6 +48,7 @@ class RolesController extends Controller
             ->paginate()
             ->withQueryString();
         $view = "Role/Index";
+        CreateRolePermission::dispatch();
         return Inertia::render($view, [
             'roles' => $roles
         ])->table(function (InertiaTable $table) {

@@ -54,6 +54,6 @@ class Employee extends Model implements HasMedia
 
     public function getFaceEmployeeAttribute()
     {
-        return (empty($this->getFirstMedia('face_employee'))) ? "" : $this->getFirstMedia('face_employee')->getTemporaryUrl(\Carbon\Carbon::now()->addMinutes(10));
+        return !empty($this->getFirstMedia('face_employee'))?$this->getFirstMedia('face_employee')->getTemporaryUrl(\Carbon\Carbon::now()->addMinutes(10)):null;
     }
 }

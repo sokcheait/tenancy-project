@@ -177,7 +177,9 @@ class EmployeeController extends Controller
     {
         $employee = $this->employee->find($request->emp_id);
         if($request->hasFile('face_employee')){
-            $employee->getFirstMedia('face_employee')->delete();
+            if($employee->getFirstMedia('face_employee')){
+                $employee->getFirstMedia('face_employee')->delete();
+            }
             $employee->addMedia($request->file('face_employee'))->toMediaCollection('face_employee');
         }
         // dd($request->face_employee);

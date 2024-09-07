@@ -25,18 +25,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $routes = config('role-permission.permissions');
-        foreach ($routes as $route) {
-            $arr = collect($route);
-            $arr->filter(function ($value, $key) {
-                $permission = Permission::where('name', $key)->first();
-                if (is_null($permission)) {
-                    permission::create(['name' => $key]);
-                }
-                return $value;
-            });
+        // $routes = config('role-permission.permissions');
+        // foreach ($routes as $route) {
+        //     $arr = collect($route);
+        //     $arr->filter(function ($value, $key) {
+        //         $permission = Permission::where('name', $key)->first();
+        //         if (is_null($permission)) {
+        //             permission::create(['name' => $key]);
+        //         }
+        //         return $value;
+        //     });
            
-        }
+        // }
         LogViewer::auth(function ($request) {
             return $request->user();
         });
