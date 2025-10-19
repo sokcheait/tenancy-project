@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button,RichSelect } from '@flavorly/vanilla-components';
 import { Head, Link,useForm } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,EyeIcon,
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon,PencilSquareIcon,EyeIcon,
     EllipsisVerticalIcon,Cog8ToothIcon,ArrowDownTrayIcon,CheckIcon,
         QrCodeIcon,
         ViewfinderCircleIcon,ClipboardDocumentCheckIcon,ShieldExclamationIcon,ShieldCheckIcon } from '@heroicons/vue/24/solid'
@@ -24,7 +24,6 @@ export default {
         Cog8ToothIcon,
         UserIcon,
         TrashIcon,
-        PencilAltIcon,
         PencilSquareIcon,
         EyeIcon,
         ArrowDownTrayIcon,

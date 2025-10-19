@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button } from '@flavorly/vanilla-components';
 import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,EyeIcon,
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon,PencilSquareIcon,EyeIcon,
     EllipsisVerticalIcon,Cog8ToothIcon,ArrowDownTrayIcon } from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
@@ -24,7 +24,6 @@ export default {
         Cog8ToothIcon,
         UserIcon,
         TrashIcon,
-        PencilAltIcon,
         PencilSquareIcon,
         EyeIcon,
         Table,

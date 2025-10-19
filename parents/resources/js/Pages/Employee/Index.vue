@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button,Dialog, DropdownMenu, DropdownOption } from '@flavorly/vanilla-components';
 import { Head, Link,useForm } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilSquareIcon,ClipboardDocumentCheckIcon,
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon,PencilSquareIcon,ClipboardDocumentCheckIcon,
     EyeIcon,EllipsisVerticalIcon,Cog8ToothIcon,CheckIcon,QrCodeIcon ,
     ViewfinderCircleIcon,XMarkIcon,ArrowDownTrayIcon,PhotoIcon,CameraIcon} from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
@@ -26,7 +26,6 @@ export default {
         Cog8ToothIcon,
         UserIcon,
         TrashIcon,
-        PencilAltIcon,
         PencilSquareIcon,
         EyeIcon,
         Table,

@@ -2,8 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button ,Dropdown, DropdownMenu, DropdownOption} from '@flavorly/vanilla-components';
 import { Head, Link } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, 
-    PencilAltIcon,PencilIcon,EyeIcon,
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon,PencilIcon,EyeIcon,
     ArrowsRightLeftIcon,EllipsisVerticalIcon,
     PencilSquareIcon,PrinterIcon 
 } from '@heroicons/vue/24/solid'
@@ -23,7 +22,6 @@ export default {
         ArrowsRightLeftIcon,
         UserIcon,
         TrashIcon,
-        PencilAltIcon,
         PencilIcon,
         EyeIcon,
         Table,

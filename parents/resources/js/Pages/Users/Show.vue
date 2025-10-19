@@ -14,7 +14,7 @@ import {
   Input as VanillaInput,
   Select as VanillaSelect,
 } from '@flavorly/vanilla-components';
-import { HomeIcon,ChevronRightIcon ,UserIcon, BadgeCheckIcon} from '@heroicons/vue/24/solid';
+import { HomeIcon,ChevronRightIcon ,UserIcon} from '@heroicons/vue/24/solid';
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 
@@ -38,8 +38,7 @@ export default {
         VanillaSelect,
         HomeIcon,
         ChevronRightIcon,
-        UserIcon,
-        BadgeCheckIcon
+        UserIcon
     },
     props: {
         user: Object,

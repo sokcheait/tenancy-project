@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Alert, Button,DropdownMenu, DropdownOption,Dialog,RichSelect } from '@flavorly/vanilla-components';
 import { Head, Link,useForm } from '@inertiajs/vue3';
-import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon, PencilAltIcon,PencilIcon,EyeIcon,PencilSquareIcon,LinkIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon,ChevronRightIcon,UserIcon, TrashIcon,PencilIcon,EyeIcon,PencilSquareIcon,LinkIcon } from '@heroicons/vue/24/solid'
 import Swal from 'vue-sweetalert2';
 import { useToast } from "vue-toastification";
 import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
@@ -18,7 +18,6 @@ export default {
         ChevronRightIcon,
         UserIcon,
         TrashIcon,
-        PencilAltIcon,
         PencilIcon,
         EyeIcon,
         Table,
